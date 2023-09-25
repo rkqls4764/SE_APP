@@ -3,23 +3,20 @@ package com.example.se_app;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.se_app.databinding.ActivityLoginBinding;
-
 public class LoginActivity extends AppCompatActivity {
-
-    private ActivityLoginBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        binding = ActivityLoginBinding.inflate(getLayoutInflater());
-        setContentView(binding.getRoot());
+        setContentView(R.layout.activity_login);
 
         /* 로그인 버튼 클릭 시 실행 구문 */
-        binding.btnLogin.setOnClickListener(new View.OnClickListener() {
+        Button btn_login = findViewById(R.id.btn_login);
+        btn_login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(LoginActivity.this, MainActivity.class);
@@ -28,7 +25,8 @@ public class LoginActivity extends AppCompatActivity {
         });
         
         /* 회원가입 버튼 클릭 시 실행 구문 */
-        binding.btnRegister.setOnClickListener(new View.OnClickListener() {
+        Button btn_register = findViewById(R.id.btn_confirm);
+        btn_register.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
