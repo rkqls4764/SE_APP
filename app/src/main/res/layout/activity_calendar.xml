@@ -57,6 +57,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:contentDescription="캘린더"
                 android:background="@drawable/button_calendar" />
 
             <android.widget.Button
@@ -64,6 +65,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:contentDescription="홈"
                 android:background="@drawable/button_home" />
 
             <android.widget.Button
@@ -71,6 +73,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:contentDescription="마이페이지"
                 android:background="@drawable/button_mypage" />
 
         </LinearLayout>

@@ -25,6 +25,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        /* btn_start가 없어서 오류 발생
         Button btn_attend = findViewById(R.id.btn_start);
         btn_attend.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -32,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
                 //기록 중단 버튼으로 변경
             }
         });
-
+        */
 
         Button btn_calendar = findViewById(R.id.btn_calendar);
         btn_calendar.setOnClickListener(new View.OnClickListener() {
