@@ -73,7 +73,7 @@
         android:layout_marginTop="10dp"
         android:ems="10"
         android:inputType="text"
-        android:text="생년월일"
+        android:text="생년월일(6자리)"
         android:textColor="#999999"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
@@ -127,6 +127,7 @@
 
     <Spinner
         android:id="@+id/sp_state"
+        android:entries="@array/state"
         android:layout_width="0dp"
         android:layout_height="50dp"
         android:layout_marginTop="10dp"
