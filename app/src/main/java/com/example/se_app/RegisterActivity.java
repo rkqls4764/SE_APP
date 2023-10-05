@@ -69,7 +69,7 @@ public class RegisterActivity extends AppCompatActivity {
                 RegisterDTO.RegisterRequest registerRequest = new RegisterDTO.RegisterRequest(
                         et_studentId.getText().toString(), et_password.getText().toString(),
                         et_name.getText().toString(), et_major.getText().toString(),
-                        state, stringToDate(et_birth.getText().toString()));
+                        state, stringToLocalDate(et_birth.getText().toString()));
 
                 Call<RegisterDTO.RegisterResponse> call = service.register("Bearer" + token, registerRequest);
                 call.enqueue(new Callback<RegisterDTO.RegisterResponse>() {
@@ -119,8 +119,8 @@ public class RegisterActivity extends AppCompatActivity {
 
     }
 
-    /* 생년월일을 String(yyMMdd) -> LocalDate(yyyy-MM-dd)로 바꾸는 함수 */
-    private LocalDate stringToDate(String dateString) {
+    /* String(yyMMdd) -> LocalDate(yyyy-MM-dd)로 바꾸는 함수 */
+    private LocalDate stringToLocalDate(String dateString) {
         DateTimeFormatter formatter = null;
         LocalDate dateLocalDate = null;
 
