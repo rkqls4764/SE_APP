@@ -3,10 +3,9 @@ package com.example.se_app;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.telecom.Call;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -18,19 +17,18 @@ import com.example.se_app.dto.RegisterDTO;
 import com.example.se_app.instance.RetrofitInstance;
 import com.example.se_app.service.Service;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+import retrofit2.Call;
 import retrofit2.Callback;
+import retrofit2.Response;
 
 public class RegisterActivity extends AppCompatActivity {
 
+    private static final String TAG = RegisterActivity.class.getSimpleName();
     Service service = RetrofitInstance.getRetrofitInstance().create(Service.class);
-
-    String state; //상태(재학/휴학/졸업)
+    private String state;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,19 +39,20 @@ public class RegisterActivity extends AppCompatActivity {
         EditText et_password = findViewById(R.id.et_password); //비밀번호
         EditText et_name = findViewById(R.id.et_name); //이름
         EditText et_major = findViewById(R.id.et_major); //학과
-        EditText et_birth = findViewById(R.id.et_birth); //생년월일
+        EditText et_birth = findViewById(R.id.et_birth); //생년월일(yyMMdd)
         Spinner sp_state = findViewById(R.id.sp_state); //상태(재학/휴학/졸업)
 
         /* 상태 리스트의 아이템 클릭 시 실행 구문 */
         sp_state.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            //아이템이 선택된 경우
             @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                state = parent.getItemAtPosition(position).toString();
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                state = adapterView.getItemAtPosition(i).toString();
             }
 
-            //아무것도 선택되지 않을 경우
+            //아무것도 선택되지 않은 경우
             @Override
-            public void onNothingSelected(AdapterView<?> parent) {
+            public void onNothingSelected(AdapterView<?> adapterView) {
                 state = "";
             }
         });
@@ -67,15 +66,41 @@ public class RegisterActivity extends AppCompatActivity {
                 SharedPreferences sharedPreferences = getSharedPreferences("MySharedPref", MODE_PRIVATE);
                 String token = sharedPreferences.getString("jwt_token", "");
 
-                Call<RegisterDTO.RegisterResponse> call = service.register("Bearer " + token,
-                        new RegisterDTO.RegisterRequest(
-                                et_studentId.getText().toString(), et_password.getText().toString(),
-                                et_name.getText().toString(), et_major.getText().toString(),
-                                state, 생일));
+                RegisterDTO.RegisterRequest registerRequest = new RegisterDTO.RegisterRequest(
+                        et_studentId.getText().toString(), et_password.getText().toString(),
+                        et_name.getText().toString(), et_major.getText().toString(),
+                        state, stringToDate(et_birth.getText().toString()));
 
-                //LoginActivity로 이동
-                Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
-                startActivity(intent);
+                Call<RegisterDTO.RegisterResponse> call = service.register("Bearer" + token, registerRequest);
+                call.enqueue(new Callback<RegisterDTO.RegisterResponse>() {
+                    //서버와 통신 성공
+                    @Override
+                    public void onResponse(Call<RegisterDTO.RegisterResponse> call, Response<RegisterDTO.RegisterResponse> response) {
+                        //응답 성공(200): 모든 항목을 입력했을 경우
+                        if (response.isSuccessful()) {
+                            //body의 회원가입 성공 메세지를 저장
+                            String message = response.body().getMessage();
+
+                            //회원가입 성공 메세지를 토스트 메세지로 띄움
+                            Toast.makeText(RegisterActivity.this, message, Toast.LENGTH_SHORT).show();
+
+                            //LoginActivity로 이동
+                            Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
+                            startActivity(intent);
+                        }
+                        //응답 실패(404): 아이디가 중복일 경우, 일부 항목을 입력하지 않았을 경우
+                        else if (response.code() == 404) {
+
+                        }
+                    }
+
+                    //서버와 통신 실패
+                    @Override
+                    public void onFailure(Call<RegisterDTO.RegisterResponse> call, Throwable t) {
+                        Toast.makeText(RegisterActivity.this, "서버와 통신을 실패하였습니다.", Toast.LENGTH_SHORT).show();
+                        Log.e(TAG, "서버 통신 실패: " + t.getMessage());
+                    }
+                });
             }
         });
 
@@ -84,18 +109,27 @@ public class RegisterActivity extends AppCompatActivity {
         btn_cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                //회원가입 실패 메세지를 토스트 메세지로 출력
                 Toast.makeText(RegisterActivity.this, "회원가입을 취소합니다.", Toast.LENGTH_SHORT).show();
-                RegisterActivity.super.onBackPressed(); //LoginActivity로 이동(뒤로가기)
+
+                //LoginActivity로 이동(뒤로가기)
+                RegisterActivity.super.onBackPressed();
             }
         });
 
-
     }
 
-    /* 생년월일을 String(yyyyMMdd) -> LocalDate(yyyy-MM-dd)로 바꾸는 함수 */
+    /* 생년월일을 String(yyMMdd) -> LocalDate(yyyy-MM-dd)로 바꾸는 함수 */
     private LocalDate stringToDate(String dateString) {
+        DateTimeFormatter formatter = null;
+        LocalDate dateLocalDate = null;
 
+        //Android 8.0 이상 버전에서만 실행 가능
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            formatter = DateTimeFormatter.ofPattern("yyMMdd");
+            dateLocalDate = LocalDate.parse(dateString, formatter);
+        }
 
-
+        return dateLocalDate;
     }
 }

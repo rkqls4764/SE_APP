@@ -1,7 +1,6 @@
 package com.example.se_app.dto;
 
 import java.time.LocalDate;
-import java.util.Date;
 
 public class RegisterDTO {
     /* 회원가입 요청 */
@@ -11,9 +10,9 @@ public class RegisterDTO {
         private String userName; //이름
         private String userMajor; //전공(학과)
         private String userState; //상태(휴학/재학/졸업)
-        private Date userBirth; //생년월일
+        private LocalDate userBirth; //생년월일
 
-        public RegisterRequest(String userId, String userPw, String userName, String userMajor, String userState, Date userBirth) {
+        public RegisterRequest(String userId, String userPw, String userName, String userMajor, String userState, LocalDate userBirth) {
             this.userId = userId;
             this.userPw = userPw;
             this.userName = userName;
@@ -28,7 +27,7 @@ public class RegisterDTO {
         public void setUserName(String userName) { this.userName = userName; }
         public void setUserMajor(String userMajor) { this.userMajor = userMajor; }
         public void setUserState(String userState) { this.userState = userState; }
-        public void setUserBirth(Date userBirth) { this.userBirth = userBirth; }
+        public void setUserBirth(LocalDate userBirth) { this.userBirth = userBirth; }
     }
 
     /* 회원가입 응답 */

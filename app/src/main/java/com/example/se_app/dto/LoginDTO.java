@@ -3,8 +3,8 @@ package com.example.se_app.dto;
 public class LoginDTO {
     /* 로그인 요청 */
     public static class LoginRequest {
-        private String userId;
-        private String userPw;
+        private String userId; //아이디
+        private String userPw; //비밀번호
 
         public LoginRequest(String userId, String userPw) {
             this.userId = userId;
