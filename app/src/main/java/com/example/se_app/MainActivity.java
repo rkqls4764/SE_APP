@@ -4,11 +4,17 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Chronometer;
+import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
 
+    //private Thread timeThread = null;
+    private Chronometer chronometer;
+    private boolean isrunning;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -25,15 +31,34 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        /* btn_start가 없어서 오류 발생
-        Button btn_attend = findViewById(R.id.btn_start);
-        btn_attend.setOnClickListener(new View.OnClickListener() {
+        // 타이머 구현
+
+        chronometer = findViewById(androidx.core.R.id.chronometer);
+        chronometer.setFormat("시간: %s");
+
+        Button btn_start = findViewById(R.id.btn_start);
+        Button btn_stop = findViewById(R.id.btn_stop);
+        TextView TimeView = findViewById(R.id.TimeView);
+        btn_start.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //기록 중단 버튼으로 변경
+                if(!isrunning) {
+                    chronometer.setBase(SystemClock.elapsedRealtime());
+                    chronometer.start();
+                    isrunning = true;
+                }
             }
         });
-        */
+
+        btn_stop.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(isrunning) {
+                    chronometer.stop();
+                    isrunning = false;
+                }
+            }
+        });
 
         Button btn_calendar = findViewById(R.id.btn_calendar);
         btn_calendar.setOnClickListener(new View.OnClickListener() {
@@ -54,6 +79,26 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-
+        class timeThread implements Runnable{
+            @Override
+            public void run() {
+                int i = 0;
+                while (true) {
+                    try {
+                        Thread.sleep(10);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                TimeView.setText("");
+                                TimeView.setText("00:00:00");
+                            }
+                        });
+                        return;
+                    }
+                }
+            }
+        }
     }
 }

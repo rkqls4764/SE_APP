@@ -60,6 +60,7 @@ public class RegisterActivity extends AppCompatActivity {
 
         /* 확인 버튼 클릭 시 실행 구문 */
         Button btn_register = findViewById(R.id.btn_register);
+        /*
         btn_register.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -77,7 +78,7 @@ public class RegisterActivity extends AppCompatActivity {
                 Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
                 startActivity(intent);
             }
-        });
+        });*/
 
         /* 취소 버튼 클릭 시 실행 구문 */
         Button btn_cancel = findViewById(R.id.btn_cancel);
@@ -93,9 +94,8 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     /* 생년월일을 String(yyyyMMdd) -> LocalDate(yyyy-MM-dd)로 바꾸는 함수 */
+    /*
     private LocalDate stringToDate(String dateString) {
-
-
-
     }
+    */
 }
