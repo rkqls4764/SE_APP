@@ -22,8 +22,9 @@ public class CalendarActivity extends AppCompatActivity {
         btn_home.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                //MainActivity로 이동
                 Intent intent = new Intent(CalendarActivity.this, MainActivity.class);
-                startActivity(intent); //MainActivity로 이동
+                startActivity(intent);
             }
         });
 
@@ -32,8 +33,9 @@ public class CalendarActivity extends AppCompatActivity {
         btn_mypage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                //MypageActivity로 이동
                 Intent intent = new Intent(CalendarActivity.this, MypageActivity.class);
-                startActivity(intent); //MypageActivity로 이동
+                startActivity(intent);
             }
         });
 

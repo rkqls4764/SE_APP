@@ -1,7 +1,6 @@
 package com.example.se_app;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -62,16 +61,12 @@ public class RegisterActivity extends AppCompatActivity {
         btn_register.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //SharedPreferences에서 토큰 가져오기
-                SharedPreferences sharedPreferences = getSharedPreferences("MySharedPref", MODE_PRIVATE);
-                String token = sharedPreferences.getString("jwt_token", "");
-
                 RegisterDTO.RegisterRequest registerRequest = new RegisterDTO.RegisterRequest(
                         et_studentId.getText().toString(), et_password.getText().toString(),
                         et_name.getText().toString(), et_major.getText().toString(),
                         state, stringToLocalDate(et_birth.getText().toString()));
 
-                Call<RegisterDTO.RegisterResponse> call = service.register("Bearer" + token, registerRequest);
+                Call<RegisterDTO.RegisterResponse> call = service.register(registerRequest);
                 call.enqueue(new Callback<RegisterDTO.RegisterResponse>() {
                     //서버와 통신 성공
                     @Override

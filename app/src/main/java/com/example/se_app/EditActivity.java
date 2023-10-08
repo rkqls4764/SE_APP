@@ -20,8 +20,9 @@ public class EditActivity extends AppCompatActivity {
         btn_ok.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                //MypageActivity로 이동
                 Intent intent = new Intent(EditActivity.this, MypageActivity.class);
-                startActivity(intent); //MypageActivity로 이동
+                startActivity(intent);
             }
         });
 
@@ -30,8 +31,9 @@ public class EditActivity extends AppCompatActivity {
         btn_no.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                //MypageActivity로 이동(뒤로가기)
                 Toast.makeText(EditActivity.this, "정보 수정을 취소합니다.", Toast.LENGTH_SHORT).show();
-                EditActivity.super.onBackPressed(); //MypageActivity로 이동(뒤로가기)
+                EditActivity.super.onBackPressed();
             }
         });
 

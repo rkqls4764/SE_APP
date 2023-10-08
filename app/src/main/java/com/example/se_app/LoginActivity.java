@@ -38,6 +38,11 @@ public class LoginActivity extends AppCompatActivity {
         btn_login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                //MainActivity로 이동
+                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                startActivity(intent);
+
+                /* 서버 통신 부분임 서버와 연결이 가능해지면 주석 해제할 예정
                 LoginDTO.LoginRequest loginRequest = new LoginDTO.LoginRequest(et_id.getText().toString(), et_pw.getText().toString());
 
                 Call<LoginDTO.LoginResponse> call = service.login(loginRequest);
@@ -71,7 +76,7 @@ public class LoginActivity extends AppCompatActivity {
                         Toast.makeText(LoginActivity.this, "서버와 통신을 실패하였습니다.", Toast.LENGTH_SHORT).show();
                         Log.e(TAG, "서버 통신 실패: " + t.getMessage());
                     }
-                });
+                }); */
             }
         });
         
@@ -80,8 +85,9 @@ public class LoginActivity extends AppCompatActivity {
         btn_register.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                //RegisterActivity로 이동
                 Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
-                startActivity(intent); //RegisterActivity로 이동
+                startActivity(intent);
             }
         });
 

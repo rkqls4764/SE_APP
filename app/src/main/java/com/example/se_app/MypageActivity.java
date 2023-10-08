@@ -83,8 +83,9 @@ public class MypageActivity extends AppCompatActivity {
         btn_edit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                //EditActivity로 이동
                 Intent intent = new Intent(MypageActivity.this, EditActivity.class);
-                startActivity(intent); //EditActivity로 이동
+                startActivity(intent);
             }
         });
 
@@ -93,8 +94,9 @@ public class MypageActivity extends AppCompatActivity {
         btn_calendar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                //CalendarActivity로 이동
                 Intent intent = new Intent(MypageActivity.this, CalendarActivity.class);
-                startActivity(intent); //CalendarActivity로 이동
+                startActivity(intent);
             }
         });
 
@@ -103,8 +105,9 @@ public class MypageActivity extends AppCompatActivity {
         btn_home.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                //MainActivity로 이동
                 Intent intent = new Intent(MypageActivity.this, MainActivity.class);
-                startActivity(intent); //MainActivity로 이동
+                startActivity(intent);
             }
         });
 

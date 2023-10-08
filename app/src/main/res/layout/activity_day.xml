@@ -22,7 +22,7 @@
                 android:textColor="#fff"
                 android:layout_margin="1dp"
                 android:layout_weight="1"
-                android:background="#FFCA28"
+                android:background="@drawable/button_calendar_yellow"
                 android:text="일수"/>
 
             <android.widget.Button
@@ -33,7 +33,7 @@
                 android:layout_margin="1dp"
                 android:textColor="#fff"
                 android:layout_weight="1"
-                android:background="#AEAEAE"
+                android:background="@drawable/button_calendar_blue"
                 android:text="시간"/>
 
 
