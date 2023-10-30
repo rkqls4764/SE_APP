@@ -18,7 +18,6 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class LoginActivity extends AppCompatActivity {
-
     Service service = RetrofitInstance.getRetrofitInstance().create(Service.class);
 
     private SharedPreferences sharedPreferences;
@@ -81,4 +80,5 @@ public class LoginActivity extends AppCompatActivity {
         });
 
     }
+
 }

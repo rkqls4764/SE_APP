@@ -32,41 +32,41 @@
             android:layout_height="400dp"
             android:background="@drawable/timer">
 
-            <Button
-                android:id="@+id/btn_start"
-                android:layout_width="0dp"
-                android:layout_height="38dp"
-                android:layout_marginStart="90dp"
-                android:layout_marginEnd="10dp"
-                android:layout_marginBottom="80dp"
-                android:background="@drawable/button_start"
-                android:textColor="#ffffff"
+            <Chronometer
+                android:id="@+id/chronometer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/btn_stop"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="parent" />
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:textSize="45sp"/>
+
             <Button
                 android:id="@+id/btn_stop"
                 android:layout_width="0dp"
                 android:layout_height="38dp"
-                android:layout_marginStart="10dp"
-                android:layout_marginEnd="90dp"
+                android:layout_marginStart="130dp"
+                android:layout_marginEnd="130dp"
                 android:layout_marginBottom="80dp"
                 android:background="@drawable/button_stop"
                 android:textColor="#ffffff"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/btn_start" />
-            <TextView
-                android:id="@+id/TimeView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="00:00:00"
-                android:textSize="50dp"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <Button
+                android:id="@+id/btn_start"
+                android:layout_width="0dp"
+                android:layout_height="38dp"
+                android:layout_marginStart="130dp"
+                android:layout_marginEnd="130dp"
+                android:layout_marginBottom="80dp"
+                android:background="@drawable/button_start"
+                android:textColor="#ffffff"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintStart_toStartOf="parent" />
 
 
 
