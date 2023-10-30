@@ -29,6 +29,7 @@ public class RegisterActivity extends AppCompatActivity {
     Service service = RetrofitInstance.getRetrofitInstance().create(Service.class);
     private String state;
 
+    /* 회원가입 화면 시작 시 실행 함수 */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,7 +57,16 @@ public class RegisterActivity extends AppCompatActivity {
             }
         });
 
-        /* 확인 버튼 클릭 시 실행 구문 */
+        //확인 버튼 클릭 시 실행
+        clickBtnRegister(et_studentId, et_password, et_name, et_major, et_birth);
+
+        //취소 버튼 클릭 시 실행
+        clickBtnCancel();
+
+    }
+
+    /* 확인 버튼 클릭 시 실행 함수 */
+    void clickBtnRegister(EditText et_studentId, EditText et_password, EditText et_name, EditText et_major, EditText et_birth) {
         Button btn_register = findViewById(R.id.btn_register);
         btn_register.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -98,8 +108,10 @@ public class RegisterActivity extends AppCompatActivity {
                 });
             }
         });
+    }
 
-        /* 취소 버튼 클릭 시 실행 구문 */
+    /* 취소 버튼 클릭 시 실행 함수 */
+    void clickBtnCancel() {
         Button btn_cancel = findViewById(R.id.btn_cancel);
         btn_cancel.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -111,7 +123,6 @@ public class RegisterActivity extends AppCompatActivity {
                 RegisterActivity.super.onBackPressed();
             }
         });
-
     }
 
     /* String(yyMMdd) -> LocalDate(yyyy-MM-dd)로 바꾸는 함수 */

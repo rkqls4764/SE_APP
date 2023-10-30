@@ -25,6 +25,7 @@ public class LoginActivity extends AppCompatActivity {
     Service service = RetrofitInstance.getRetrofitInstance().create(Service.class);
     private SharedPreferences sharedPreferences;
 
+    /* 로그인 화면 시작 시 실행 함수 */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,18 +34,21 @@ public class LoginActivity extends AppCompatActivity {
         EditText et_id = findViewById(R.id.et_id); //아이디 입력 칸
         EditText et_pw = findViewById(R.id.et_pw); //비밀번호 입력 칸
 
-        /* 로그인 버튼 클릭 시 실행 구문 */
+        //로그인 버튼 클릭 시 실행
+        clickBtnLogin(et_id, et_pw);
+        
+        //회원가입 버튼 클릭 시 실행
+        clickBtnRegister();
+    }
+
+    /* 로그인 버튼 클릭 시 실행 함수 */
+    void clickBtnLogin(EditText et_id, EditText et_pw) {
+
         Button btn_login = findViewById(R.id.btn_login);
         btn_login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //MainActivity로 이동
-                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                startActivity(intent);
-
-                /* 서버 통신 부분임 서버와 연결이 가능해지면 주석 해제할 예정
                 LoginDTO.LoginRequest loginRequest = new LoginDTO.LoginRequest(et_id.getText().toString(), et_pw.getText().toString());
-
                 Call<LoginDTO.LoginResponse> call = service.login(loginRequest);
                 call.enqueue(new Callback<LoginDTO.LoginResponse>() {
                     //서버와 통신 성공
@@ -56,9 +60,7 @@ public class LoginActivity extends AppCompatActivity {
                             String token = response.body().getToken();
 
                             //SharedPreferences로 토큰 저장
-                            SharedPreferences.Editor myEdit = sharedPreferences.edit();
-                            myEdit.putString("jwt_token", token);
-                            myEdit.apply();
+                            setToken(token);
 
                             //MainActivity로 이동
                             Intent intent = new Intent(LoginActivity.this, MainActivity.class);
@@ -76,11 +78,13 @@ public class LoginActivity extends AppCompatActivity {
                         Toast.makeText(LoginActivity.this, "서버와 통신을 실패하였습니다.", Toast.LENGTH_SHORT).show();
                         Log.e(TAG, "서버 통신 실패: " + t.getMessage());
                     }
-                }); */
+                });
             }
         });
-        
-        /* 회원가입 버튼 클릭 시 실행 구문 */
+    }
+
+    /* 회원가입 버튼 클릭 시 실행 함수 */
+    void clickBtnRegister() {
         Button btn_register = findViewById(R.id.btn_confirm);
         btn_register.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -90,6 +94,12 @@ public class LoginActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+    }
 
+    /* SharedPreferences로 토큰을 저장하는 함수 */
+    void setToken(String token) {
+        SharedPreferences.Editor myEdit = sharedPreferences.edit();
+        myEdit.putString("jwt_token", token);
+        myEdit.apply();
     }
 }

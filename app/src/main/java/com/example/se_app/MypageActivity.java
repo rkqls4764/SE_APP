@@ -40,12 +40,32 @@ public class MypageActivity extends AppCompatActivity {
         TextView tv_birth = findViewById(R.id.tv_birth); //생년월일
         TextView tv_state = findViewById(R.id.tv_state); //상태(재학/휴학/졸업)
 
-        /* 정보 가져오기 */
         //SharedPreferences에서 토큰 가져오기
+        String token = getToken();
+
+        //사용자 정보 가져오기
+        getUserData(token, tv_studentId, tv_password, tv_name, tv_major, tv_birth, tv_state);
+
+        //정보 수정 버튼 클릭 시 실행
+        clickBtnEdit();
+
+        //하단 캘린더 버튼 클릭 시 실행 구문
+        clickBtnCalendar();
+
+        //하단 홈 버튼 클릭 시 실행 구문
+        clickBtnHome();
+    }
+
+    /* SharedPreferences에서 토큰을 가져오는 함수 */
+    String getToken() {
         SharedPreferences sharedPreferences = getSharedPreferences("MySharedPref", MODE_PRIVATE);
         String token = sharedPreferences.getString("jwt_token", "");
+        return token;
+    }
 
-        Call<MypageDTO.MypageResponse> call = service.mypage("Bearer" + token);
+    /* 사용자의 정보를 가져오는 함수 */
+    void getUserData(String token, TextView tv_studentId, TextView tv_password, TextView tv_name, TextView tv_major, TextView tv_birth, TextView tv_state) {
+        Call<MypageDTO.MypageResponse> call = service.mypage("Bearer " + token);
         call.enqueue(new Callback<MypageDTO.MypageResponse>() {
             //서버와 통신 성공
             @Override
@@ -64,7 +84,7 @@ public class MypageActivity extends AppCompatActivity {
                 else if (response.code() == 505) {
                     //body의 에러 메세지를 저장
                     String message = response.body().getMessage();
-                    
+
                     //에러 메세지를 토스트 메세지로 띄움
                     Toast.makeText(MypageActivity.this, message, Toast.LENGTH_SHORT).show();
                 }
@@ -77,8 +97,10 @@ public class MypageActivity extends AppCompatActivity {
                 Log.e(TAG, "서버 통신 실패: " + t.getMessage());
             }
         });
+    }
 
-        /* 정보 수정 버튼 클릭 시 실행 구문 */
+    /* 정보 수정 버튼 클릭 시 실행 함수 */
+    void clickBtnEdit() {
         Button btn_edit = findViewById(R.id.btn_edit);
         btn_edit.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -88,8 +110,10 @@ public class MypageActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-
-        /* 하단 캘린더 버튼 클릭 시 실행 구문 */
+    }
+    
+    /* 하단 캘린더 버튼 클릭 시 실행 함수 */
+    void clickBtnCalendar() {
         Button btn_calendar = findViewById(R.id.btn_calendar);
         btn_calendar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -99,8 +123,10 @@ public class MypageActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+    }
 
-        /* 하단 홈 버튼 클릭 시 실행 구문 */
+    /* 하단 홈 버튼 클릭 시 실행 함수 */
+    void clickBtnHome() {
         Button btn_home = findViewById(R.id.btn_home);
         btn_home.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -110,7 +136,6 @@ public class MypageActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-
     }
 
     /* LocalDate(yyyy-MM-dd) -> String(yyMMdd)로 바꾸는 함수 */

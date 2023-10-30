@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 public class MypageDTO {
     /* 마이페이지 정보 조회 응답 */
     public static class MypageResponse {
-        private String message; //오류 메세지
+        private String message; //오류 메세지용하
         private String userId; //학번(아이디)
         private String userPw; //비밀번호
         private String userName; //이름
