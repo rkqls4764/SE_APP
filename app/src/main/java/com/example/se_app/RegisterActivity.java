@@ -29,7 +29,7 @@ public class RegisterActivity extends AppCompatActivity {
     Service service = RetrofitInstance.getRetrofitInstance().create(Service.class);
     private String state;
 
-    /* 회원가입 화면 시작 시 실행 함수 */
+    /* 화면 시작 시 실행 함수 */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

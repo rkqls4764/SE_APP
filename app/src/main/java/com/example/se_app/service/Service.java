@@ -27,6 +27,6 @@ public interface Service {
 
     //회원 정보 수정
     @PATCH("/user/mypage")
-    Call<MypageDTO.MypageResponse> edit(@Header("Authorization") String token);
+    Call<MypageDTO.MypageResponse> edit(@Body RegisterDTO.RegisterRequest registerRequest);
 
 }

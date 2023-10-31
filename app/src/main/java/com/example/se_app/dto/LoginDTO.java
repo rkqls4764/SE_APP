@@ -3,17 +3,17 @@ package com.example.se_app.dto;
 public class LoginDTO {
     /* 로그인 요청 */
     public static class LoginRequest {
-        private String userId; //아이디
-        private String userPw; //비밀번호
+        private String memberId; //아이디
+        private String memberPw; //비밀번호
 
-        public LoginRequest(String userId, String userPw) {
-            this.userId = userId;
-            this.userPw = userPw;
+        public LoginRequest(String memberId, String memberPw) {
+            this.memberId = memberId;
+            this.memberPw = memberPw;
         }
 
         //setter
-        public void setUserId(String userId) { this.userId = userId; }
-        public void setUserPw(String userPw) { this.userPw = userPw; }
+        public void setMemberId(String memberId) { this.memberId = memberId; }
+        public void setMemberPw(String memberPw) { this.memberPw = memberPw; }
     }
 
     /* 로그인 응답 */

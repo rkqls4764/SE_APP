@@ -28,6 +28,7 @@ public class MypageActivity extends AppCompatActivity {
     private static final String TAG = RegisterActivity.class.getSimpleName();
     Service service = RetrofitInstance.getRetrofitInstance().create(Service.class);
 
+    /* 화면 시작 시 실행 함수 */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -73,12 +74,12 @@ public class MypageActivity extends AppCompatActivity {
                 //응답 성공(200): 데이터베이스에서 회원 정보를 제대로 읽어왔을 때
                 if (response.isSuccessful()) {
                     //정보 출력
-                    tv_studentId.setText("학번 : " + response.body().getUserId());
-                    tv_password.setText("비밀번호 : " + response.body().getUserPw());
-                    tv_name.setText("이름 : " + response.body().getUserName());
-                    tv_major.setText("학과 : " + response.body().getUserMajor());
-                    tv_birth.setText("생년월일 : " + localDateToString(response.body().getUserBirth()));
-                    tv_state.setText("상태 : " + response.body().getUserState());
+                    tv_studentId.setText("학번 : " + response.body().getMemberId());
+                    tv_password.setText("비밀번호 : " + response.body().getMemberPw());
+                    tv_name.setText("이름 : " + response.body().getMemberName());
+                    tv_major.setText("학과 : " + response.body().getMemberMajor());
+                    tv_birth.setText("생년월일 : " + localDateToString(response.body().getMemberBirth()));
+                    tv_state.setText("상태 : " + response.body().getMemberState());
                 }
                 //응답 실패(505): 데이터베이스 오류
                 else if (response.code() == 505) {

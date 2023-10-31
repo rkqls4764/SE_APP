@@ -10,8 +10,15 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.se_app.instance.RetrofitInstance;
+import com.example.se_app.service.Service;
+
 public class CalendarActivity extends AppCompatActivity {
 
+    private static final String TAG = RegisterActivity.class.getSimpleName();
+    Service service = RetrofitInstance.getRetrofitInstance().create(Service.class);
+
+    /* 화면 시작 시 실행 함수 */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
