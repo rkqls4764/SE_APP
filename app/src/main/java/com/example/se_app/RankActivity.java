@@ -1,24 +1,19 @@
 package com.example.se_app;
 
 import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
+import android.widget.Button;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
+import androidx.appcompat.app.AppCompatActivity;
 
-public class RankActivity extends Fragment {
+public class RankActivity extends AppCompatActivity {
 
-    public RankActivity()
-    {
+    Button btn_time = findViewById(R.id.btn_time);
+    Button btn_day = findViewById(R.id.btn_day);
 
-    }
-
-    @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.activity_rank, container, false);
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_rank);
     }
+
 }

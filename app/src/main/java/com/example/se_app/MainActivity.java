@@ -32,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
 
         // 타이머 구현
         chronometer = findViewById(androidx.core.R.id.chronometer);
-        chronometer.setFormat("시간: %s");
+        chronometer.setFormat("%s");
 
         Button btn_start = findViewById(R.id.btn_start);
         Button btn_stop = findViewById(R.id.btn_stop);
