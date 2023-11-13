@@ -1,17 +1,29 @@
 package com.example.se_app;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CalendarView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.se_app.dto.CalendarDTO;
+import com.example.se_app.dto.NoticeDTO;
 import com.example.se_app.instance.RetrofitInstance;
 import com.example.se_app.service.Service;
+
+import org.w3c.dom.Text;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.http.Header;
 
 public class CalendarActivity extends AppCompatActivity {
 
@@ -25,29 +37,139 @@ public class CalendarActivity extends AppCompatActivity {
         setContentView(R.layout.activity_calendar);
 
         /*
-        - 공지사항 가져오기
-        - 목표시간 가져오기
         - 캘린더 초기 값 설정
         - 캘린더 날짜 선택 시 해당 날짜 정보 가져오기
          */
+
+        //SharedPreferences에서 토큰 가져오기
+        String token = getToken();
+
+        //공지사항 조회
+        TextView tv_notice = findViewById(R.id.tv_notice);
+        getNotice(token, tv_notice);
 
         /* 캘린더에서 날짜 선택 시 실행 구문 */
         CalendarView calendarView = findViewById(R.id.calendarView);
         calendarView.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
             @Override
             public void onSelectedDayChange(@NonNull CalendarView calendarView, int year, int month, int day) {
-                /* TextView를 선택 날짜로 설정 */
+                //TextView를 선택 날짜로 설정
                 TextView tv_day = findViewById(R.id.tv_day);
                 tv_day.setText(year + "년 " + month + "월 " + day + "일");
+
+                //목표시간 조회
+                TextView tv_goal = findViewById(R.id.tv_goal);
+                getGoalTime(token, month, tv_goal);
+
+                //출석 기록 조회
+                TextView tv_time = findViewById(R.id.tv_time);
+                getRecordTime(token, month, tv_time);
             }
         });
 
-        // 하단 홈 버튼 클릭 시 실행
+        //하단 홈 버튼 클릭 시 실행
         clickBtnHome();
 
-        // 하단 마이페이지 버튼 클릭 시 실행
+        //하단 마이페이지 버튼 클릭 시 실행
         clickBtnMypage();
 
+    }
+
+    /* SharedPreferences에서 토큰을 가져오는 함수 */
+    String getToken() {
+        SharedPreferences sharedPreferences = getSharedPreferences("MySharedPref", MODE_PRIVATE);
+        String token = sharedPreferences.getString("jwt_token", "");
+        return token;
+    }
+
+    /* 시간(초)를 시간(시:분:초)로 변환하는 함수 */
+    String secondToTime(int time) {
+        String hour = String.valueOf(time / 3600);
+        String minute = String.valueOf((time % 3600) / 60);
+        String second = String.valueOf((time % 3600) % 60);
+
+        return hour + ":" + minute + ":" + second;
+    }
+
+    /* 공지사항을 조회하는 함수 */
+    void getNotice(String token, TextView tv_notice) {
+        Call<NoticeDTO.NoticeResponse> call = service.notice("Bearer " + token);
+        call.enqueue(new Callback<NoticeDTO.NoticeResponse>() {
+            //서버와 통신 성공
+            @Override
+            public void onResponse(Call<NoticeDTO.NoticeResponse> call, Response<NoticeDTO.NoticeResponse> response) {
+                //응답 성공(200): 공지사항이 있는 경우
+                if (response.isSuccessful()) {
+                    //공지사항 출력
+                    tv_notice.setText(response.body().getNoticeContent());
+                }
+                //응답 실패(404): 공지사항이 없는 경우
+                else if (response.code() == 404) {
+                    //body의 에러 메세지를 저장
+                    String message = response.body().getMessage();
+
+                    //에러 메세지를 토스트 메세지로 띄움
+                    Toast.makeText(CalendarActivity.this, message, Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            //서버와 통신 실패
+            @Override
+            public void onFailure(Call<NoticeDTO.NoticeResponse> call, Throwable t) {
+                Toast.makeText(CalendarActivity.this, "서버와 통신을 실패하였습니다.", Toast.LENGTH_SHORT).show();
+                Log.e(TAG, "서버 통신 실패: " + t.getMessage());
+            }
+        });
+    }
+
+    /* 캘린더에서 선택한 달의 목표시간을 조회하는 함수 */
+    void getGoalTime(String token, int month, TextView tv_goal) {
+        Call<CalendarDTO.GoalResponse> call = service.goal("Bearer " + token, String.valueOf(month));
+        call.enqueue(new Callback<CalendarDTO.GoalResponse>() {
+            //서버와 통신 성공
+            @Override
+            public void onResponse(Call<CalendarDTO.GoalResponse> call, Response<CalendarDTO.GoalResponse> response) {
+                //응답 성공(200): 정상적으로 접근한 경우
+                if (response.isSuccessful()) {
+                    //시간 변환(초 -> 시:분:초)
+                    String time = secondToTime(response.body().getStudyGoal());
+                    //목표시간 설정
+                    tv_goal.setText("목표시간 : " + time);
+                }
+            }
+
+            //서버와 통신 실패
+            @Override
+            public void onFailure(Call<CalendarDTO.GoalResponse> call, Throwable t) {
+                Toast.makeText(CalendarActivity.this, "서버와 통신을 실패하였습니다.", Toast.LENGTH_SHORT).show();
+                Log.e(TAG, "서버 통신 실패: " + t.getMessage());
+            }
+        });
+    }
+
+    /* 캘린더에서 선택한 날짜의 출석 기록을 조회하는 함수 */
+    void getRecordTime(String token, int month, TextView tv_time) {
+        Call<CalendarDTO.TimeResponse> call = service.time("Bearer" + token, String.valueOf(month));
+        call.enqueue(new Callback<CalendarDTO.TimeResponse>() {
+            //서버와 통신 성공
+            @Override
+            public void onResponse(Call<CalendarDTO.TimeResponse> call, Response<CalendarDTO.TimeResponse> response) {
+                //응답 성공(200): 정상적으로 접근한 경우
+                if (response.isSuccessful()) {
+                    //시간 변환(초 -> 시:분:초)
+                    String time = secondToTime(response.body().getRecordTime());
+                    //출석 기록 설정
+                    tv_time.setText(time);
+                }
+            }
+
+            //서버와 통신 실패
+            @Override
+            public void onFailure(Call<CalendarDTO.TimeResponse> call, Throwable t) {
+                Toast.makeText(CalendarActivity.this, "서버와 통신을 실패하였습니다.", Toast.LENGTH_SHORT).show();
+                Log.e(TAG, "서버 통신 실패: " + t.getMessage());
+            }
+        });
     }
 
     /* 하단 홈 버튼 클릭 시 실행 함수 */
