@@ -32,8 +32,8 @@
             android:layout_height="400dp"
             android:background="@drawable/timer">
 
-            <Chronometer
-                android:id="@+id/chronometer"
+            <TextView
+                android:id="@+id/tv_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:layout_constraintBottom_toBottomOf="parent"

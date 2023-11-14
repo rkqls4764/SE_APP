@@ -30,32 +30,30 @@ public interface Service {
     @PATCH("/user/mypage")
     Call<MypageDTO.MypageResponse> edit(@Body RegisterDTO.RegisterRequest registerRequest);
 
-    //랭킹 보기(출석 시간)
-    @GET("/rank/time/{month}")
-    Call<RecordDTO.TimeRank> timerank(@Body RecordDTO.TimeRank timerank);
 
     //랭킹 보기(출석 일수)
     @GET("/rank/day/{month}")
-    Call<RecordDTO.DayRank> dayrank(@Body RecordDTO.DayRank dayrank);
+    Call<RecordDTO.Rank> dayrank(@Body RecordDTO.Rank dayrankRequest);
 
-
+    //랭킹 보기(출석 시간)
+    @GET("/rank/time/{month}")
+    Call<RecordDTO.Rank> timerank(@Body RecordDTO.Rank timerankRequest);
 
 
     //jwt 사용
-
     //당일 기록 가져오기
     @GET("/record/today")
-    Call<RecordDTO.Record> todayrecord(@Body RecordDTO.Record recordTime);
+    Call<RecordDTO.record> todayrecord(@Header("Authorization") String token);
 
     //기록하기
     @POST("/record")
-    Call<RecordDTO.Record> record(@Body RecordDTO.Record userLatitude, @Body RecordDTO.Record userLongitude);
+    Call<RecordDTO.record> record(@Header("Authorization") String token, @Body RecordDTO.Rank userLatitude, @Body RecordDTO.Rank userLongitude);
 
     //기록 중단
     @POST("/record/stop")
-    Call<RecordDTO.Record> stoprecord(@Body RecordDTO.Record recordTime, @Body RecordDTO.Record userLatitude, @Body RecordDTO.Record userLongitude);
+    Call<RecordDTO.record> stoprecord(@Header("Authorization") String token, @Body RecordDTO.Rank recordTime, @Body RecordDTO.Rank userLatitude, @Body RecordDTO.Rank userLongitude);
 
     //위치 보내기
-    @POST("/record/location")
-    Call<RecordDTO.Record> locationrecord(@Body RecordDTO.Record memLatitude, @Body RecordDTO.Record memberLongitude, @Body RecordDTO.Record recordTime);
+    @POST("/record")
+    Call<RecordDTO.locationResponse> location(@Header("Authorization") String token, @Body RecordDTO.locationRequest);
 }
