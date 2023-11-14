@@ -7,7 +7,7 @@ public class CalendarDTO {
 
     /* 목표시간 응답 */
     public static class GoalResponse {
-        int studyGoal; //목표시간(초)
+        private int studyGoal; //목표시간(초)
 
         //getter
         public int getStudyGoal() { return studyGoal; }
@@ -15,8 +15,8 @@ public class CalendarDTO {
 
     /* 출석 기록 응답 */
     public static class TimeResponse {
-        int recordTime; //출석시간(초)
-        LocalDate recordDate; //날짜
+        private int recordTime; //출석시간(초)
+        private LocalDate recordDate; //날짜
 
         //getter
         public int getRecordTime() { return recordTime; }

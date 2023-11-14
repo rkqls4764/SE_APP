@@ -135,8 +135,6 @@ public class EditActivity extends AppCompatActivity {
                     public void onResponse(Call<MypageDTO.MypageResponse> call, Response<MypageDTO.MypageResponse> response) {
                         //응답 성공(200): 데이터베이스에서 회원 정보를 제대로 읽어왔을 때
                         if (response.isSuccessful()) {
-                            /* body 내용 안받아도 될듯 */
-
                             //MypageActivity로 이동
                             Toast.makeText(EditActivity.this, "회원 정보가 수정되었습니다.", Toast.LENGTH_SHORT).show();
                             Intent intent = new Intent(EditActivity.this, MypageActivity.class);
