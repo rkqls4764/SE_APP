@@ -20,6 +20,9 @@ import com.example.se_app.service.Service;
 
 import org.w3c.dom.Text;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -36,11 +39,6 @@ public class CalendarActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_calendar);
 
-        /*
-        - 캘린더 초기 값 설정
-        - 캘린더 날짜 선택 시 해당 날짜 정보 가져오기
-         */
-
         //SharedPreferences에서 토큰 가져오기
         String token = getToken();
 
@@ -48,13 +46,18 @@ public class CalendarActivity extends AppCompatActivity {
         TextView tv_notice = findViewById(R.id.tv_notice);
         getNotice(token, tv_notice);
 
+        //캘린더에서 날짜를 선택하지 않을 시, 오늘 날짜 출력
+        TextView tv_day = findViewById(R.id.tv_day);
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy년 MM월 dd일");
+        Date date = new Date();
+        tv_day.setText(formatter.format(date));
+
         /* 캘린더에서 날짜 선택 시 실행 구문 */
         CalendarView calendarView = findViewById(R.id.calendarView);
         calendarView.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
             @Override
             public void onSelectedDayChange(@NonNull CalendarView calendarView, int year, int month, int day) {
-                //TextView를 선택 날짜로 설정
-                TextView tv_day = findViewById(R.id.tv_day);
+                //선택한 날짜 출력
                 tv_day.setText(year + "년 " + month + "월 " + day + "일");
 
                 //목표시간 조회
