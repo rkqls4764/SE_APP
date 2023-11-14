@@ -4,6 +4,7 @@ import com.example.se_app.dto.CalendarDTO;
 import com.example.se_app.dto.LoginDTO;
 import com.example.se_app.dto.MypageDTO;
 import com.example.se_app.dto.NoticeDTO;
+import com.example.se_app.dto.RecordDTO;
 import com.example.se_app.dto.RegisterDTO;
 
 import retrofit2.Call;
@@ -44,4 +45,32 @@ public interface Service {
     @GET("/myrecord")
     Call<CalendarDTO.TimeResponse> time(@Header("Authorization") String token, @Query("month") String month);
 
+    //랭킹 보기(출석 시간)
+    @GET("/rank/time/{month}")
+    Call<RecordDTO.TimeRank> timerank(@Body RecordDTO.TimeRank timerank);
+
+    //랭킹 보기(출석 일수)
+    @GET("/rank/day/{month}")
+    Call<RecordDTO.DayRank> dayrank(@Body RecordDTO.DayRank dayrank);
+
+
+
+
+    //jwt 사용
+
+    //당일 기록 가져오기
+    @GET("/record/today")
+    Call<RecordDTO.Record> todayrecord(@Body RecordDTO.Record recordTime);
+
+    //기록하기
+    @POST("/record")
+    Call<RecordDTO.Record> record(@Body RecordDTO.Record userLatitude, @Body RecordDTO.Record userLongitude);
+
+    //기록 중단
+    @POST("/record/stop")
+    Call<RecordDTO.Record> stoprecord(@Body RecordDTO.Record recordTime, @Body RecordDTO.Record userLatitude, @Body RecordDTO.Record userLongitude);
+
+    //위치 보내기
+    @POST("/record/location")
+    Call<RecordDTO.Record> locationrecord(@Body RecordDTO.Record memLatitude, @Body RecordDTO.Record memberLongitude, @Body RecordDTO.Record recordTime);
 }
