@@ -25,7 +25,7 @@ public interface Service {
     Call<RegisterDTO.RegisterResponse> register(@Body RegisterDTO.RegisterRequest registerRequest);
 
     //회원 정보 조회
-    @GET("/user/mypage")
+    @GET("/member/mypage")
     Call<MypageDTO.MypageResponse> mypage(@Header("Authorization") String token);
 
     //회원 정보 수정

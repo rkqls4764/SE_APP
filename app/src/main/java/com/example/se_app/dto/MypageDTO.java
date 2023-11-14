@@ -14,7 +14,6 @@ public class MypageDTO {
         private String memberState; //상태(휴학/재학/졸업)
         private LocalDate memberBirth; //생년월일
         private LocalDateTime createTime; //가입일
-        private LocalDateTime updateTime; //최종 수정 시간
 
         //getter
         public String getMessage() { return message; }
@@ -25,6 +24,5 @@ public class MypageDTO {
         public String getMemberState() { return memberState; }
         public LocalDate getMemberBirth() { return memberBirth; }
         public LocalDateTime getCreateTime() { return createTime; }
-        public LocalDateTime getUpdateTime() { return updateTime; }
     }
 }
