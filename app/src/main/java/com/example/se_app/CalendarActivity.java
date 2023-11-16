@@ -107,6 +107,9 @@ public class CalendarActivity extends AppCompatActivity {
                 }
                 //응답 실패(404): 공지사항이 없는 경우
                 else if (response.code() == 404) {
+                    //공지사항 출력
+                    tv_notice.setText("공지사항이 없습니다.");
+
                     //body의 에러 메세지를 저장
                     String message = response.body().getMessage();
 
@@ -163,6 +166,9 @@ public class CalendarActivity extends AppCompatActivity {
                     //출석 기록 설정
                     tv_time.setText(time);
                 }
+                /*
+                응답 바디(time)가 없는 경우 -> 00:00:00 or 출석X 출력
+                 */
             }
 
             //서버와 통신 실패

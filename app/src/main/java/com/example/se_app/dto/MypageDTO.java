@@ -12,7 +12,7 @@ public class MypageDTO {
         private String memberName; //이름
         private String memberMajor; //전공(학과)
         private String memberState; //상태(휴학/재학/졸업)
-        private LocalDate memberBirth; //생년월일
+        private String memberBirth; //생년월일
         private LocalDateTime createTime; //가입일
 
         //getter
@@ -22,7 +22,7 @@ public class MypageDTO {
         public String getMemberName() { return memberName; }
         public String getMemberMajor() { return memberMajor; }
         public String getMemberState() { return memberState; }
-        public LocalDate getMemberBirth() { return memberBirth; }
+        public String getMemberBirth() { return memberBirth; }
         public LocalDateTime getCreateTime() { return createTime; }
     }
 }

@@ -93,7 +93,7 @@ public class EditActivity extends AppCompatActivity {
                     et_password.setText("비밀번호 : " + response.body().getMemberPw());
                     et_name.setText("이름 : " + response.body().getMemberName());
                     et_major.setText("학과 : " + response.body().getMemberMajor());
-                    et_birth.setText("생년월일 : " + localDateToString(response.body().getMemberBirth()));
+                    et_birth.setText("생년월일 : " + response.body().getMemberBirth());
                     String state = response.body().getMemberState();
                     sp_state.setSelection(getIndex(sp_state, state));
                 }
@@ -126,7 +126,7 @@ public class EditActivity extends AppCompatActivity {
                 RegisterDTO.RegisterRequest registerRequest = new RegisterDTO.RegisterRequest(
                         et_studentId.getText().toString(), et_password.getText().toString(),
                         et_name.getText().toString(), et_major.getText().toString(),
-                        state, stringToLocalDate(et_birth.getText().toString()));
+                        state, et_birth.getText().toString());
 
                 Call<MypageDTO.MypageResponse> call = service.edit(registerRequest);
                 call.enqueue(new Callback<MypageDTO.MypageResponse>() {
@@ -135,8 +135,13 @@ public class EditActivity extends AppCompatActivity {
                     public void onResponse(Call<MypageDTO.MypageResponse> call, Response<MypageDTO.MypageResponse> response) {
                         //응답 성공(200): 데이터베이스에서 회원 정보를 제대로 읽어왔을 때
                         if (response.isSuccessful()) {
+                            //body의 성공 메세지를 저장
+                            String message = response.body().getMessage();
+
+                            //성공 메세지를 토스트 메세지로 띄움
+                            Toast.makeText(EditActivity.this, message, Toast.LENGTH_SHORT).show();
+
                             //MypageActivity로 이동
-                            Toast.makeText(EditActivity.this, "회원 정보가 수정되었습니다.", Toast.LENGTH_SHORT).show();
                             Intent intent = new Intent(EditActivity.this, MypageActivity.class);
                             startActivity(intent);
                         }

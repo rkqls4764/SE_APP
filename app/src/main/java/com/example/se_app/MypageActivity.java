@@ -58,8 +58,8 @@ public class MypageActivity extends AppCompatActivity {
 
     /* SharedPreferences에서 토큰을 가져오는 함수 */
     String getToken() {
-        SharedPreferences sharedPreferences = getSharedPreferences("MySharedPref", MODE_PRIVATE);
-        String token = sharedPreferences.getString("jwt_token", "");
+        SharedPreferences sharedPreferences = getSharedPreferences("token", MODE_PRIVATE);
+        String token = sharedPreferences.getString("token", "");
         return token;
     }
 
@@ -77,7 +77,7 @@ public class MypageActivity extends AppCompatActivity {
                     tv_password.setText("비밀번호 : " + response.body().getMemberPw());
                     tv_name.setText("이름 : " + response.body().getMemberName());
                     tv_major.setText("학과 : " + response.body().getMemberMajor());
-                    tv_birth.setText("생년월일 : " + localDateToString(response.body().getMemberBirth()));
+                    tv_birth.setText("생년월일 : " + response.body().getMemberBirth());
                     tv_state.setText("상태 : " + response.body().getMemberState());
                 }
                 //응답 실패(505): 데이터베이스 오류

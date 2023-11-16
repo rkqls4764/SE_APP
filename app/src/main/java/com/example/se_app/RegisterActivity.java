@@ -74,7 +74,7 @@ public class RegisterActivity extends AppCompatActivity {
                 RegisterDTO.RegisterRequest registerRequest = new RegisterDTO.RegisterRequest(
                         et_studentId.getText().toString(), et_password.getText().toString(),
                         et_name.getText().toString(), et_major.getText().toString(),
-                        state, stringToLocalDate(et_birth.getText().toString()));
+                        state, et_birth.getText().toString());
 
                 Call<RegisterDTO.RegisterResponse> call = service.register(registerRequest);
                 call.enqueue(new Callback<RegisterDTO.RegisterResponse>() {

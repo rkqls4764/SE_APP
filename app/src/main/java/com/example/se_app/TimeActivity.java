@@ -22,7 +22,7 @@ public class TimeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_time);
-
+/*
         Call<RecordDTO.TimeRank> call = Service.timerank();
         call.enqueue(new Callback<RecordDTO.TimeRank>() {
             @Override
@@ -47,6 +47,6 @@ public class TimeActivity extends AppCompatActivity {
 
             }
         });
-
+*/
     }
 }

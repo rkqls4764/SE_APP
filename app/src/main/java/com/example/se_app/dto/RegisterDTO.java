@@ -10,9 +10,9 @@ public class RegisterDTO {
         private String memberName; //이름
         private String memberMajor; //전공(학과)
         private String memberState; //상태(휴학/재학/졸업)
-        private LocalDate memberBirth; //생년월일
+        private String memberBirth; //생년월일
 
-        public RegisterRequest(String memberId, String memberPw, String memberName, String memberMajor, String memberState, LocalDate memberBirth) {
+        public RegisterRequest(String memberId, String memberPw, String memberName, String memberMajor, String memberState, String memberBirth) {
             this.memberId = memberId;
             this.memberPw = memberPw;
             this.memberName = memberName;
@@ -27,7 +27,7 @@ public class RegisterDTO {
         public void setMemberName(String memberName) { this.memberName = memberName; }
         public void setMemberMajor(String memberMajor) { this.memberMajor = memberMajor; }
         public void setMemberState(String memberState) { this.memberState = memberState; }
-        public void setMemberBirth(LocalDate memberBirth) { this.memberBirth = memberBirth; }
+        public void setMemberBirth(String memberBirth) { this.memberBirth = memberBirth; }
     }
 
     /* 회원가입 응답 */

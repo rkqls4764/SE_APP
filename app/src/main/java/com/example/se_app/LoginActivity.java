@@ -99,8 +99,9 @@ public class LoginActivity extends AppCompatActivity {
 
     /* SharedPreferences로 토큰을 저장하는 함수 */
     void setToken(String token) {
-        SharedPreferences.Editor myEdit = sharedPreferences.edit();
-        myEdit.putString("jwt_token", token);
-        myEdit.apply();
+        sharedPreferences = getSharedPreferences("token", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("token", token);
+        editor.apply();
     }
 }

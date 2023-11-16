@@ -18,11 +18,11 @@ import retrofit2.http.Query;
 public interface Service {
 
     //로그인
-    @POST("/user/login")
+    @POST("/member/login")
     Call<LoginDTO.LoginResponse> login(@Body LoginDTO.LoginRequest loginRequest);
 
     //회원가입
-    @POST("/user/signup")
+    @POST("/member/signup")
     Call<RegisterDTO.RegisterResponse> register(@Body RegisterDTO.RegisterRequest registerRequest);
 
     //회원 정보 조회
@@ -30,20 +30,20 @@ public interface Service {
     Call<MypageDTO.MypageResponse> mypage(@Header("Authorization") String token);
 
     //회원 정보 수정
-    @PATCH("/user/mypage")
+    @PATCH("/member/mypage")
     Call<MypageDTO.MypageResponse> edit(@Body RegisterDTO.RegisterRequest registerRequest);
 
     //공지사항 조회
     @GET("/notice/now")
     Call<NoticeDTO.NoticeResponse> notice(@Header("Authorization") String token);
 
-    //목표시간 조회
-    @GET("/studygoal")
-    Call<CalendarDTO.GoalResponse> goal(@Header("Authorization") String token, @Query("month") String month);
-
     //출석기록 조회
     @GET("/myrecord")
     Call<CalendarDTO.TimeResponse> time(@Header("Authorization") String token, @Query("month") String month);
+
+    //목표시간 조회
+    @GET("/studygoal")
+    Call<CalendarDTO.GoalResponse> goal(@Header("Authorization") String token, @Query("month") String month);
 
     //랭킹 보기(출석 시간)
     @GET("/rank/time/{month}")
