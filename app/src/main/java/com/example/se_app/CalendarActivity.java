@@ -57,7 +57,7 @@ public class CalendarActivity extends AppCompatActivity {
             @Override
             public void onSelectedDayChange(@NonNull CalendarView calendarView, int year, int month, int day) {
                 //선택한 날짜 출력
-                tv_day.setText(year + "년 " + month + "월 " + day + "일");
+                tv_day.setText(year + "년 " + (month + 1) + "월 " + day + "일");
 
                 //목표시간 조회
                 TextView tv_goal = findViewById(R.id.tv_goal);
