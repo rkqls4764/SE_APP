@@ -2,6 +2,7 @@ package com.example.se_app.service;
 
 import com.example.se_app.dto.LoginDTO;
 import com.example.se_app.dto.MypageDTO;
+import com.example.se_app.dto.RankDTO;
 import com.example.se_app.dto.RecordDTO;
 import com.example.se_app.dto.RegisterDTO;
 
@@ -33,27 +34,27 @@ public interface Service {
 
     //랭킹 보기(출석 일수)
     @GET("/rank/day/{month}")
-    Call<RecordDTO.Rank> dayrank(@Body RecordDTO.Rank dayrankRequest);
+    Call<RankDTO.RankResponse> dayrank(@Header("Authorization") String token);
 
     //랭킹 보기(출석 시간)
     @GET("/rank/time/{month}")
-    Call<RecordDTO.Rank> timerank(@Body RecordDTO.Rank timerankRequest);
+    Call<RankDTO.RankResponse> timerank(@Header("Authorization") String token);
 
 
     //jwt 사용
     //당일 기록 가져오기
     @GET("/record/today")
-    Call<RecordDTO.record> todayrecord(@Header("Authorization") String token);
+    Call<RecordDTO.TodayRecord> todayrecord(@Header("Authorization") String token);
 
     //기록하기
     @POST("/record")
-    Call<RecordDTO.record> record(@Header("Authorization") String token, @Body RecordDTO.Rank userLatitude, @Body RecordDTO.Rank userLongitude);
+    Call<RecordDTO.StartRecord> startrecord(@Header("Authorization") String token, @Body RecordDTO.StartRecord userLatitude, @Body RecordDTO.StartRecord userLongitude);
 
     //기록 중단
     @POST("/record/stop")
-    Call<RecordDTO.record> stoprecord(@Header("Authorization") String token, @Body RecordDTO.Rank recordTime, @Body RecordDTO.Rank userLatitude, @Body RecordDTO.Rank userLongitude);
+    Call<RecordDTO.StopRecord> stoprecord(@Header("Authorization") String token, @Body RecordDTO.StopRecord recordTime, @Body RecordDTO.StopRecord userLatitude, @Body RecordDTO.StopRecord userLongitude);
 
     //위치 보내기
     @POST("/record")
-    Call<RecordDTO.locationResponse> location(@Header("Authorization") String token, @Body RecordDTO.locationRequest);
+    Call<RecordDTO.Location> location(@Header("Authorization") String token, @Body RecordDTO.Location memberLatitude, @Body RecordDTO.Location memberLongitude);
 }

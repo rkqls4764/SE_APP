@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -40,23 +41,20 @@ public class MainActivity extends AppCompatActivity {
     //당일 기록 가져오기
     void getTodayRecord() {
         String token = getToken();
-        Call<RecordDTO.record> call = service.todayrecord("Bearer " + token);
-        call.enqueue(new Callback<RecordDTO.record>() {
+        Call<RecordDTO.TodayRecord> call = service.todayrecord("Bearer " + token);
+        call.enqueue(new Callback<RecordDTO.TodayRecord>() {
             //서버 통신 성공
             @Override
-            public void onResponse(Call<RecordDTO.record> call, Response<RecordDTO.record> response) {
+            public void onResponse(Call<RecordDTO.TodayRecord> call, Response<RecordDTO.TodayRecord> response) {
                 //응답 성공(200)
                 if (response.isSuccessful()) {
                     //당일 기록 저장
                     int recordTime = response.body().getRecordTimeToday();
-
-
                 }
             }
-
             //서버 통신 실패
             @Override
-            public void onFailure(Call<RecordDTO.record> call, Throwable t) {
+            public void onFailure(Call<RecordDTO.TodayRecord> call, Throwable t) {
                 Toast.makeText(MainActivity.this, "서버와 통신을 실패하였습니다.", Toast.LENGTH_SHORT).show();
                 Log.e(TAG, "서버 통신 실패: " + t.getMessage());
             }
@@ -64,29 +62,33 @@ public class MainActivity extends AppCompatActivity {
     }
 
     //기록하기(출석하기)
-    void record() {
+    void startRecord() {
         String token = getToken();
+        Double setUserLatitude = 0.0;
+        Double setUserLongitude = 0.0;
 
-        Call<RecordDTO.Record> call = service.record(token, record);
-        call.enqueue(new Callback<RecordDTO.Record>() {
+        Call<RecordDTO.StartRecord> call = service.startrecord("Bearer " + token, setUserLatitude, setUserLongitude);
+        call.enqueue(new Callback<RecordDTO.StartRecord>() {
             @Override
-            public void onResponse(Call<RecordDTO.Record> record, Response<RecordDTO.Record> response) {
+            public void onResponse(Call<RecordDTO.StartRecord> record, Response<RecordDTO.StartRecord> response) {
                 if (response.isSuccessful()) {
                     // 응답 성공(200)
-                    String Latitude = response.body().setUserLatitude();
-                    String Longitude = response.body().setUserLongitude();
-                    String message = "기록 시작합니다.";
+                    Double Latitude = response.body().getUserLatitude();
+                    Double Longitude = response.body().getUserLongitude();
+                    String message = response.body().getMessage();
                     Toast.makeText(getApplicationContext(), message,Toast.LENGTH_SHORT).show();
                 } else {
                     // 응답 실패(403)
-                    String message = "동아리방에서 출석해 주세요";
+                    String message = response.body().getMessage();
                     Toast.makeText(getApplicationContext(), message,Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
-            public void onFailure(Call<RecordDTO.Record> record, Throwable t) {
+            public void onFailure(Call<RecordDTO.StartRecord> record, Throwable t) {
                 // 서버와 통신이 실패
+                Toast.makeText(MainActivity.this, "서버와 통신을 실패하였습니다.", Toast.LENGTH_SHORT).show();
+                Log.e(TAG, "서버 통신 실패: " + t.getMessage());
             }
         });
     }
@@ -95,50 +97,55 @@ public class MainActivity extends AppCompatActivity {
     void stopRecord() {
         String token = getToken();
 
-        Call<RecordDTO.Record> call = service.record(token, record);
-        call.enqueue(new Callback<RecordDTO.Record>() {
+        Call<RecordDTO.StopRecord> call = service.stoprecord("Bearer " + token);
+        call.enqueue(new Callback<RecordDTO.StopRecord>() {
             @Override
-            public void onResponse(Call<RecordDTO.Record> record, Response<RecordDTO.Record> response) {
+            public void onResponse(Call<RecordDTO.StopRecord> record, Response<RecordDTO.StopRecord> response) {
                 if (response.isSuccessful()) {
                     // 응답 성공(200)
+                    int recordTime = response.body().getRecordTime();
+                    Double userLatitude = response.body().getUserLatitude();
+                    Double userLongitude = response.body().getUserLongitude();
+                    String message = response.body().getMessage();
+                    Toast.makeText(getApplicationContext(), message,Toast.LENGTH_SHORT).show();
                 } else {
                     // 응답 실패(403)
-                    String message = "동아리방에서 출석해 주세요";
+                    String message = response.body().getMessage();
                     Toast.makeText(getApplicationContext(), message,Toast.LENGTH_SHORT).show();
                 }
             }
             @Override
-            public void onFailure(Call<RecordDTO.Record> record, Throwable t) {
+            public void onFailure(Call<RecordDTO.StopRecord> record, Throwable t) {
                 // 서버와 통신이 실패
+                Toast.makeText(MainActivity.this, "서버와 통신을 실패하였습니다.", Toast.LENGTH_SHORT).show();
+                Log.e(TAG, "서버 통신 실패: " + t.getMessage());
             }
         });
     }
 
     //위치 보내기
-    void recordLocation() {
+    void Location() {
         String token = getToken();
 
         //현재 위치 값을 여기 넣어!!!!!!!!!!!!!!
-        Double userLatitude = 0.0; //경도
-        Double userLongitude = 0.0; //위도
+        Double memberLatitude = 0.0; //경도
+        Double memberLongitude = 0.0; //위도
+        int recordtime = 0;
+        RecordDTO.Location location = new RecordDTO.Location(recordtime, memberLatitude, memberLongitude);
 
-        RecordDTO.locationRequest locationRequest = new RecordDTO.locationRequest(userLatitude, userLongitude);
-
-        Call<RecordDTO.locationResponse> call = service.record("Bearer " + token, locationRequest);
-        call.enqueue(new Callback<RecordDTO.locationResponse>() {
+        Call<RecordDTO.Location> call = service.location("Bearer " + token, location);
+        call.enqueue(new Callback<RecordDTO.Location>() {
             //서버 통신 성공
             @Override
-            public void onResponse(Call<RecordDTO.locationResponse> call, Response<RecordDTO.locationResponse> response) {
+            public void onResponse(Call<RecordDTO.Location> call, Response<RecordDTO.Location> response) {
                 //응답 성공(200)
                 if (response.isSuccessful()) {
-                    //성공 메세지 저장
+                    Double memberLatitude = response.body().getMemberLatitude();
+                    Double memberLongitude = response.body().getMemberLongitude();
                     String message = response.body().getMessage();
-                    //토스트 출력
                     Toast.makeText(MainActivity.this, message, Toast.LENGTH_SHORT).show();
-                }
-                //(403)
-                else if (response.code() == 403) {
-                    //에러 메세지 저장
+                } else {
+                    // 응답 실패(401)
                     String message = response.body().getMessage();
                     //토스트 출력
                     Toast.makeText(MainActivity.this, message, Toast.LENGTH_SHORT).show();
@@ -147,7 +154,7 @@ public class MainActivity extends AppCompatActivity {
 
             //서버 통신 실패
             @Override
-            public void onFailure(Call<RecordDTO.locationResponse> call, Throwable t) {
+            public void onFailure(Call<RecordDTO.Location> call, Throwable t) {
                 Toast.makeText(MainActivity.this, "서버와 통신을 실패하였습니다.", Toast.LENGTH_SHORT).show();
                 Log.e(TAG, "서버 통신 실패: " + t.getMessage());
             }
@@ -259,7 +266,6 @@ public class MainActivity extends AppCompatActivity {
                                 tv_time.setText("00:00:00");
                             }
                         });
-                        return; // 인터럽트 받을 경우 return
                     }
                 }
             }

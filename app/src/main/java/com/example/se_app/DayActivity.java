@@ -1,13 +1,22 @@
 package com.example.se_app;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.se_app.dto.RankDTO;
 import com.example.se_app.dto.RecordDTO;
+import com.example.se_app.instance.RetrofitInstance;
 import com.example.se_app.service.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -15,41 +24,63 @@ import retrofit2.Response;
 
 public class DayActivity extends AppCompatActivity {
 
-    Button btn_time = findViewById(R.id.btn_time);
-    Button btn_day = findViewById(R.id.btn_day);
+    private static final String TAG = MainActivity.class.getSimpleName();
+    private List<String> data = new ArrayList<>();
+    private ArrayAdapter<String> adapter;
+    Service service = RetrofitInstance.getRetrofitInstance().create(Service.class);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_day);
 
+        Button btn_time = findViewById(R.id.btn_time);
+        Button btn_day = findViewById(R.id.btn_day);
+        ListView list = findViewById(R.id.list);
 
-        Call<RecordDTO.Rank> call = Service.dayrank();
-        call.enqueue(new Callback<RecordDTO.Rank>() {
+
+        //배열 연결과정
+        adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, data);
+        list.setAdapter(adapter);
+
+        String token = getToken();
+        getData(token);
+
+    }
+    String getToken() {
+        SharedPreferences sharedPreferences = getSharedPreferences("MySharedPref", MODE_PRIVATE);
+        String token = sharedPreferences.getString("jwt_token", "");
+        return token;
+    }
+
+    void getData(String token) {
+        Call<RankDTO.RankResponse> call = service.dayrank("Bearer " + token);
+        call.enqueue(new Callback<RankDTO.RankResponse>() {
             @Override
-            public void onResponse(Call<RecordDTO.Rank> call, Response<RecordDTO.Rank> response) {
-                if( response.isSuccessful()) {
-                    for(int i = 0; i < 5; i++) {
-                        String memberId = response.body().getMemberId();
-                        String memberName = response.body().getMemberName();
-                        String memberMajor = response.body().getMemberMajor();
-                        int recordTime = response.body().getRecordTime();
+            public void onResponse(Call<RankDTO.RankResponse> call, Response<RankDTO.RankResponse> response) {
+                if (response.isSuccessful()) {
+                    List<RankDTO.RankResponse> rankList = response.body();
+                    for (RankDTO.RankResponse rankItem : rankList) {
+                        String memberName = rankItem.getMemberName();
+                        String memberId = rankItem.getMemberId();
+                        String recordTime = String.valueOf(rankItem.getRecordTime());
+
+                        String dataItem = "Name: " + memberName + ", ID: " + memberId + ", Time: " + recordTime;
+                        data.add(dataItem);
                     }
-                }
-                else {
-                    //404 error
-                    String message = "저장된 회원 정보가 없습니다.";
+                    adapter.notifyDataSetChanged();
+                } else {
+                    // Handle unsuccessful response
+                    String message = "Error: " + response.code();
                     Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
-
                 }
             }
-            //서버와 통신 실패
-            @Override
-            public void onFailure(Call<RecordDTO.Rank> call, Throwable t) {
-                String message = "서버와 연결이 끊겼습니다.";
-                Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
-            }
 
+            @Override
+            public void onFailure(Call<RankDTO.RankResponse> call, Throwable t) {
+                Toast.makeText(DayActivity.this, "서버와 통신을 실패하였습니다.", Toast.LENGTH_SHORT).show();
+                Log.e(TAG, "서버 통신 실패: " + t.getMessage());
+            }
         });
     }
 }
