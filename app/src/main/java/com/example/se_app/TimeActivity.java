@@ -22,31 +22,33 @@ public class TimeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_time);
-/*
-        Call<RecordDTO.TimeRank> call = Service.timerank();
-        call.enqueue(new Callback<RecordDTO.TimeRank>() {
+
+        Call<RecordDTO.locationResponse> call = service.timerank();
+        call.enqueue(new Callback<RecordDTO.Rank>() {
             @Override
-            public void onResponse(Call<RecordDTO.TimeRank> call, Response<RecordDTO.TimeRank> response) {
+            public void onResponse(Call<RecordDTO.Rank> call, Response<RecordDTO.Rank> response) {
                 if( response.isSuccessful()) {
-                    String msg = response.body().getClass();
-                    //학생 없을 때 있을 때 나눠서 출력 구문
-                    //학생 데이터 정보를 정렬해서 주는지 아닌지
+                    for(int i = 0; i < 5; i++) {
+                        String memberId = response.body().getMemberId();
+                        String memberName = response.body().getMemberName();
+                        String memberMajor = response.body().getMemberMajor();
+                        int recordTime = response.body().getRecordTime();
+                    }
                 }
                 else {
-                    String errormsg = "오류 발생";
-                    Toast.makeText(getApplicationContext(), errormsg, Toast.LENGTH_SHORT).show();
+                    //404 error
+                    String message = "저장된 회원 정보가 없습니다.";
+                    Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
 
                 }
             }
-
+            //서버와 통신 실패
             @Override
-            public void onFailure(Call<RecordDTO.TimeRank> call, Throwable t) {
-                String errormsg = "서버와 연결이 끊겼습니다.";
-                Toast.makeText(getApplicationContext(), errormsg, Toast.LENGTH_SHORT).show();
-
-
+            public void onFailure(Call<RecordDTO.Rank> call, Throwable t) {
+                String message = "서버와 연결이 끊겼습니다.";
+                Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
             }
+
         });
-*/
     }
 }
