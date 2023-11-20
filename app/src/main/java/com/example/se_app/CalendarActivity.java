@@ -18,8 +18,6 @@ import com.example.se_app.dto.NoticeDTO;
 import com.example.se_app.instance.RetrofitInstance;
 import com.example.se_app.service.Service;
 
-import org.w3c.dom.Text;
-
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -61,11 +59,11 @@ public class CalendarActivity extends AppCompatActivity {
 
                 //목표시간 조회
                 TextView tv_goal = findViewById(R.id.tv_goal);
-                getGoalTime(token, month, tv_goal);
+                getGoalTime(token, (month + 1), tv_goal);
 
                 //출석 기록 조회
                 TextView tv_time = findViewById(R.id.tv_time);
-                getRecordTime(token, month, tv_time);
+                getDayTime(token, (month + 1), day, tv_time);
             }
         });
 
@@ -86,11 +84,11 @@ public class CalendarActivity extends AppCompatActivity {
 
     /* 시간(초)를 시간(시:분:초)로 변환하는 함수 */
     String secondToTime(int time) {
-        String hour = String.valueOf(time / 3600);
-        String minute = String.valueOf((time % 3600) / 60);
-        String second = String.valueOf((time % 3600) % 60);
+        int hour = time / 3600;
+        int minute = (time % 3600) / 60;
+        int second = (time % 3600) % 60;
 
-        return hour + ":" + minute + ":" + second;
+        return String.valueOf(hour) + ":" + String.valueOf(minute) + ":" + String.valueOf(second);
     }
 
     /* 공지사항을 조회하는 함수 */
@@ -107,14 +105,10 @@ public class CalendarActivity extends AppCompatActivity {
                 }
                 //응답 실패(404): 공지사항이 없는 경우
                 else if (response.code() == 404) {
-                    //공지사항 출력
-                    tv_notice.setText("공지사항이 없습니다.");
-
-                    //body의 에러 메세지를 저장
+                    //'공지사항 없음' 메세지 저장
                     String message = response.body().getMessage();
-
-                    //에러 메세지를 토스트 메세지로 띄움
-                    Toast.makeText(CalendarActivity.this, message, Toast.LENGTH_SHORT).show();
+                    //공지사항 칸에 메세지 출력
+                    tv_notice.setText(message);
                 }
             }
 
@@ -153,8 +147,8 @@ public class CalendarActivity extends AppCompatActivity {
     }
 
     /* 캘린더에서 선택한 날짜의 출석 기록을 조회하는 함수 */
-    void getRecordTime(String token, int month, TextView tv_time) {
-        Call<CalendarDTO.TimeResponse> call = service.time("Bearer" + token, String.valueOf(month));
+    void getDayTime(String token, int month, int day, TextView tv_time) {
+        Call<CalendarDTO.TimeResponse> call = service.time("Bearer" + token, month, day);
         call.enqueue(new Callback<CalendarDTO.TimeResponse>() {
             //서버와 통신 성공
             @Override
@@ -166,9 +160,11 @@ public class CalendarActivity extends AppCompatActivity {
                     //출석 기록 설정
                     tv_time.setText(time);
                 }
-                /*
-                응답 바디(time)가 없는 경우 -> 00:00:00 or 출석X 출력
-                 */
+                //응답 실패(404): 해당 날짜에 기록이 없는 경우
+                else if (response.body() == null) {
+                    //출석 기록 설정
+                    tv_time.setText("00:00:00");
+                }
             }
 
             //서버와 통신 실패

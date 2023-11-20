@@ -13,13 +13,10 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.se_app.dto.EditDTO;
 import com.example.se_app.dto.MypageDTO;
-import com.example.se_app.dto.RegisterDTO;
 import com.example.se_app.instance.RetrofitInstance;
 import com.example.se_app.service.Service;
-
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -66,7 +63,7 @@ public class EditActivity extends AppCompatActivity {
         getUserData(token, et_studentId, et_password, et_name, et_major, et_birth, sp_state);
 
         //확인 버튼 클릭 시 실행
-        clickBtnOk(et_studentId, et_password, et_name, et_major, et_birth);
+        clickBtnOk(token, et_password, et_name, et_major, et_birth);
 
         //취소 버튼 클릭 시 실행 구문
         clickBtnNo();
@@ -117,22 +114,22 @@ public class EditActivity extends AppCompatActivity {
     }
 
     /* 확인 버튼 클릭 시 실행 함수 */
-    void clickBtnOk(EditText et_studentId, EditText et_password, EditText et_name, EditText et_major, EditText et_birth) {
+    void clickBtnOk(String token, EditText et_password, EditText et_name, EditText et_major, EditText et_birth) {
 
         Button btn_ok = findViewById(R.id.btn_ok);
         btn_ok.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                RegisterDTO.RegisterRequest registerRequest = new RegisterDTO.RegisterRequest(
-                        et_studentId.getText().toString(), et_password.getText().toString(),
+                EditDTO.EditRequest editRequest = new EditDTO.EditRequest(
+                        et_password.getText().toString(),
                         et_name.getText().toString(), et_major.getText().toString(),
                         state, et_birth.getText().toString());
 
-                Call<MypageDTO.MypageResponse> call = service.edit(registerRequest);
-                call.enqueue(new Callback<MypageDTO.MypageResponse>() {
+                Call<EditDTO.EditResponse> call = service.edit("Bearer " + token, editRequest);
+                call.enqueue(new Callback<EditDTO.EditResponse>() {
                     //서버와 통신 성공
                     @Override
-                    public void onResponse(Call<MypageDTO.MypageResponse> call, Response<MypageDTO.MypageResponse> response) {
+                    public void onResponse(Call<EditDTO.EditResponse> call, Response<EditDTO.EditResponse> response) {
                         //응답 성공(200): 데이터베이스에서 회원 정보를 제대로 읽어왔을 때
                         if (response.isSuccessful()) {
                             //body의 성공 메세지를 저장
@@ -145,19 +142,11 @@ public class EditActivity extends AppCompatActivity {
                             Intent intent = new Intent(EditActivity.this, MypageActivity.class);
                             startActivity(intent);
                         }
-                        //응답 실패(505): 데이터베이스 오류
-                        else if (response.code() == 505) {
-                            //body의 에러 메세지를 저장
-                            String message = response.body().getMessage();
-
-                            //에러 메세지를 토스트 메세지로 띄움
-                            Toast.makeText(EditActivity.this, message, Toast.LENGTH_SHORT).show();
-                        }
                     }
 
                     //서버와 통신 실패
                     @Override
-                    public void onFailure(Call<MypageDTO.MypageResponse> call, Throwable t) {
+                    public void onFailure(Call<EditDTO.EditResponse> call, Throwable t) {
                         Toast.makeText(EditActivity.this, "서버와 통신을 실패하였습니다.", Toast.LENGTH_SHORT).show();
                         Log.e(TAG, "서버 통신 실패: " + t.getMessage());
                     }
@@ -177,34 +166,6 @@ public class EditActivity extends AppCompatActivity {
                 EditActivity.super.onBackPressed();
             }
         });
-    }
-
-    /* LocalDate(yyyy-MM-dd) -> String(yyMMdd)로 바꾸는 함수 */
-    private String localDateToString(LocalDate dateLocalDate) {
-        DateTimeFormatter formatter = null;
-        String dateString = null;
-
-        //Android 8.0 이상 버전에서만 실행 가능
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-            formatter = DateTimeFormatter.ofPattern("yyMMdd");
-            dateString = dateLocalDate.format(formatter);
-        }
-
-        return dateString;
-    }
-
-    /* String(yyMMdd) -> LocalDate(yyyy-MM-dd)로 바꾸는 함수 */
-    private LocalDate stringToLocalDate(String dateString) {
-        DateTimeFormatter formatter = null;
-        LocalDate dateLocalDate = null;
-
-        //Android 8.0 이상 버전에서만 실행 가능
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-            formatter = DateTimeFormatter.ofPattern("yyMMdd");
-            dateLocalDate = LocalDate.parse(dateString, formatter);
-        }
-
-        return dateLocalDate;
     }
 
     /* state 초기 값의 번호를 찾아주는 함수 */

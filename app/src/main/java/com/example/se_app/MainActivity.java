@@ -2,27 +2,15 @@ package com.example.se_app;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.location.Location;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
-import android.util.Log;
+import android.os.SystemClock;
 import android.view.View;
 import android.widget.Button;
-import android.widget.TextView;
-import android.widget.Toast;
-
-import com.example.se_app.dto.RecordDTO;
-import com.example.se_app.instance.RetrofitInstance;
-import com.example.se_app.service.Service;
-
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
+import android.widget.Chronometer;
+import android.widget.LinearLayout;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = MainActivity.class.getSimpleName();
@@ -180,32 +168,32 @@ public class MainActivity extends AppCompatActivity {
         });
 
         // 타이머 구현
-        tv_time = findViewById(R.id.tv_time);
+        chronometer = findViewById(androidx.core.R.id.chronometer);
+        chronometer.setFormat("%s");
+
         Button btn_start = findViewById(R.id.btn_start);
         Button btn_stop = findViewById(R.id.btn_stop);
         btn_start.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (!isrunning) {
+                    chronometer.setBase(SystemClock.elapsedRealtime());
+                    chronometer.start();
                     isrunning = true;
                     btn_start.setVisibility(View.INVISIBLE);
                     btn_stop.setVisibility(View.VISIBLE);
-
-                    timeThread = new Thread(new timeThread());
-                    timeThread.start();
                 }
             }
         });
+
         btn_stop.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (isrunning) {
+                    chronometer.stop();
                     isrunning = false;
                     btn_stop.setVisibility(View.INVISIBLE);
                     btn_start.setVisibility(View.VISIBLE);
-
-                    tv_time.setText("");
-                    timeThread.interrupt();
                 }
             }
         });

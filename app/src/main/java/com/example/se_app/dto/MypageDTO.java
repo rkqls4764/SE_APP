@@ -1,12 +1,10 @@
 package com.example.se_app.dto;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public class MypageDTO {
     /* 마이페이지 정보 조회 응답 */
     public static class MypageResponse {
-        private String message;
         private String memberId; //학번(아이디)
         private String memberPw; //비밀번호
         private String memberName; //이름
@@ -16,7 +14,6 @@ public class MypageDTO {
         private LocalDateTime createTime; //가입일
 
         //getter
-        public String getMessage() { return message; }
         public String getMemberId() { return memberId; }
         public String getMemberPw() { return memberPw; }
         public String getMemberName() { return memberName; }

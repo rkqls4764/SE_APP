@@ -15,9 +15,6 @@ import com.example.se_app.dto.MypageDTO;
 import com.example.se_app.instance.RetrofitInstance;
 import com.example.se_app.service.Service;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -82,14 +79,6 @@ public class MypageActivity extends AppCompatActivity {
                     tv_birth.setText("생년월일 : " + response.body().getMemberBirth());
                     tv_state.setText("상태 : " + response.body().getMemberState());
                 }
-                //응답 실패(505): 데이터베이스 오류
-                else if (response.code() == 505) {
-                    //body의 에러 메세지를 저장
-                    String message = response.body().getMessage();
-
-                    //에러 메세지를 토스트 메세지로 띄움
-                    Toast.makeText(MypageActivity.this, message, Toast.LENGTH_SHORT).show();
-                }
             }
 
             //서버와 통신 실패
@@ -140,17 +129,4 @@ public class MypageActivity extends AppCompatActivity {
         });
     }
 
-    /* LocalDate(yyyy-MM-dd) -> String(yyMMdd)로 바꾸는 함수 */
-    private String localDateToString(LocalDate dateLocalDate) {
-        DateTimeFormatter formatter = null;
-        String dateString = null;
-
-        //Android 8.0 이상 버전에서만 실행 가능
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-            formatter = DateTimeFormatter.ofPattern("yyMMdd");
-            dateString = dateLocalDate.format(formatter);
-        }
-
-        return dateString;
-    }
 }

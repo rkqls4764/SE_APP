@@ -16,9 +16,6 @@ import com.example.se_app.dto.RegisterDTO;
 import com.example.se_app.instance.RetrofitInstance;
 import com.example.se_app.service.Service;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -126,17 +123,4 @@ public class RegisterActivity extends AppCompatActivity {
         });
     }
 
-    /* String(yyMMdd) -> LocalDate(yyyy-MM-dd)로 바꾸는 함수 */
-    private LocalDate stringToLocalDate(String dateString) {
-        DateTimeFormatter formatter = null;
-        LocalDate dateLocalDate = null;
-
-        //Android 8.0 이상 버전에서만 실행 가능
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-            formatter = DateTimeFormatter.ofPattern("yyMMdd");
-            dateLocalDate = LocalDate.parse(dateString, formatter);
-        }
-
-        return dateLocalDate;
-    }
 }
