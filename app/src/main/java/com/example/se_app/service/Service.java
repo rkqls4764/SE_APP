@@ -32,11 +32,11 @@ public interface Service {
 
     //랭킹 보기(출석 시간)
     @GET("/rank/time/{month}")
-    Call<RecordDTO.TimeRank> timerank(@Body RecordDTO.TimeRank timerank);
+    Call<RecordDTO.TimeRank> timerank();
 
     //랭킹 보기(출석 일수)
     @GET("/rank/day/{month}")
-    Call<RecordDTO.DayRank> dayrank(@Body RecordDTO.DayRank dayrank);
+    Call<RecordDTO.DayRank> dayrank();
 
 
 
