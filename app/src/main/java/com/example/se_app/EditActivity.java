@@ -94,14 +94,6 @@ public class EditActivity extends AppCompatActivity {
                     String state = response.body().getMemberState();
                     sp_state.setSelection(getIndex(sp_state, state));
                 }
-                //응답 실패(505): 데이터베이스 오류
-                else if (response.code() == 505) {
-                    //body의 에러 메세지를 저장
-                    String message = response.body().getMessage();
-
-                    //에러 메세지를 토스트 메세지로 띄움
-                    Toast.makeText(EditActivity.this, message, Toast.LENGTH_SHORT).show();
-                }
             }
 
             //서버와 통신 실패
