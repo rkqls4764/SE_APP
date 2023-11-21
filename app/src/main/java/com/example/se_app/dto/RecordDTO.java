@@ -7,11 +7,10 @@ public class RecordDTO {
         private int recordTime; //당일 기록시간
 
         //setter
-        public void setRecordTimeToday(int recordTime) {this.recordTime = recordTime; }
-
-        //getter
-        public int getRecordTimeToday() { return recordTime; }
-
+        public int setRecordTimeToday() {
+            this.recordTime = recordTime;
+            return 0;
+        }
     }
 
     /* 기록하기, 출석하기 */
