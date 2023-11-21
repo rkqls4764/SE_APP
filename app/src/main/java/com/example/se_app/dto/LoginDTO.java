@@ -19,8 +19,10 @@ public class LoginDTO {
     /* 로그인 응답 */
     public static class LoginResponse {
         private String token;
+        private String message;
 
         //getter
         public String getToken() { return token; }
+        public String getMessage() { return message; }
     }
 }

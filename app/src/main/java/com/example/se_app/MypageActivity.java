@@ -15,13 +15,9 @@ import com.example.se_app.dto.MypageDTO;
 import com.example.se_app.instance.RetrofitInstance;
 import com.example.se_app.service.Service;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-
 
 public class MypageActivity extends AppCompatActivity {
 
@@ -34,6 +30,7 @@ public class MypageActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mypage);
 
+        TextView tv_titleName = findViewById(R.id.tv_titleName); //상단 이름
         TextView tv_studentId = findViewById(R.id.tv_studentId); //학번(아이디)
         TextView tv_password = findViewById(R.id.tv_password); //비밀번호
         TextView tv_name = findViewById(R.id.tv_name); //이름
@@ -45,7 +42,7 @@ public class MypageActivity extends AppCompatActivity {
         String token = getToken();
 
         //사용자 정보 가져오기
-        getUserData(token, tv_studentId, tv_password, tv_name, tv_major, tv_birth, tv_state);
+        getUserData(token, tv_titleName, tv_studentId, tv_password, tv_name, tv_major, tv_birth, tv_state);
 
         //정보 수정 버튼 클릭 시 실행
         clickBtnEdit();
@@ -59,13 +56,13 @@ public class MypageActivity extends AppCompatActivity {
 
     /* SharedPreferences에서 토큰을 가져오는 함수 */
     String getToken() {
-        SharedPreferences sharedPreferences = getSharedPreferences("MySharedPref", MODE_PRIVATE);
-        String token = sharedPreferences.getString("jwt_token", "");
+        SharedPreferences sharedPreferences = getSharedPreferences("token", MODE_PRIVATE);
+        String token = sharedPreferences.getString("token", "");
         return token;
     }
 
     /* 사용자의 정보를 가져오는 함수 */
-    void getUserData(String token, TextView tv_studentId, TextView tv_password, TextView tv_name, TextView tv_major, TextView tv_birth, TextView tv_state) {
+    void getUserData(String token, TextView tv_titleName, TextView tv_studentId, TextView tv_password, TextView tv_name, TextView tv_major, TextView tv_birth, TextView tv_state) {
         Call<MypageDTO.MypageResponse> call = service.mypage("Bearer " + token);
         call.enqueue(new Callback<MypageDTO.MypageResponse>() {
             //서버와 통신 성공
@@ -74,20 +71,13 @@ public class MypageActivity extends AppCompatActivity {
                 //응답 성공(200): 데이터베이스에서 회원 정보를 제대로 읽어왔을 때
                 if (response.isSuccessful()) {
                     //정보 출력
+                    tv_titleName.setText(response.body().getMemberName());
                     tv_studentId.setText("학번 : " + response.body().getMemberId());
                     tv_password.setText("비밀번호 : " + response.body().getMemberPw());
                     tv_name.setText("이름 : " + response.body().getMemberName());
                     tv_major.setText("학과 : " + response.body().getMemberMajor());
-                    tv_birth.setText("생년월일 : " + localDateToString(response.body().getMemberBirth()));
+                    tv_birth.setText("생년월일 : " + response.body().getMemberBirth());
                     tv_state.setText("상태 : " + response.body().getMemberState());
-                }
-                //응답 실패(505): 데이터베이스 오류
-                else if (response.code() == 505) {
-                    //body의 에러 메세지를 저장
-                    String message = response.body().getMessage();
-
-                    //에러 메세지를 토스트 메세지로 띄움
-                    Toast.makeText(MypageActivity.this, message, Toast.LENGTH_SHORT).show();
                 }
             }
 
@@ -139,17 +129,4 @@ public class MypageActivity extends AppCompatActivity {
         });
     }
 
-    /* LocalDate(yyyy-MM-dd) -> String(yyMMdd)로 바꾸는 함수 */
-    private String localDateToString(LocalDate dateLocalDate) {
-        DateTimeFormatter formatter = null;
-        String dateString = null;
-
-        //Android 8.0 이상 버전에서만 실행 가능
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-            formatter = DateTimeFormatter.ofPattern("yyMMdd");
-            dateString = dateLocalDate.format(formatter);
-        }
-
-        return dateString;
-    }
 }

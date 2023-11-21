@@ -16,9 +16,6 @@ import com.example.se_app.dto.RegisterDTO;
 import com.example.se_app.instance.RetrofitInstance;
 import com.example.se_app.service.Service;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -74,7 +71,7 @@ public class RegisterActivity extends AppCompatActivity {
                 RegisterDTO.RegisterRequest registerRequest = new RegisterDTO.RegisterRequest(
                         et_studentId.getText().toString(), et_password.getText().toString(),
                         et_name.getText().toString(), et_major.getText().toString(),
-                        state, stringToLocalDate(et_birth.getText().toString()));
+                        state, et_birth.getText().toString());
 
                 Call<RegisterDTO.RegisterResponse> call = service.register(registerRequest);
                 call.enqueue(new Callback<RegisterDTO.RegisterResponse>() {
@@ -93,9 +90,10 @@ public class RegisterActivity extends AppCompatActivity {
                             Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
                             startActivity(intent);
                         }
-                        //응답 실패(404): 아이디가 중복일 경우, 일부 항목을 입력하지 않았을 경우
+                        //응답 실패(404): 아이디가 중복일 경우
                         else if (response.code() == 404) {
-
+                            //에러 메세지를 토스트 메세지로 출력
+                            Toast.makeText(RegisterActivity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
                         }
                     }
 
@@ -125,17 +123,4 @@ public class RegisterActivity extends AppCompatActivity {
         });
     }
 
-    /* String(yyMMdd) -> LocalDate(yyyy-MM-dd)로 바꾸는 함수 */
-    private LocalDate stringToLocalDate(String dateString) {
-        DateTimeFormatter formatter = null;
-        LocalDate dateLocalDate = null;
-
-        //Android 8.0 이상 버전에서만 실행 가능
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-            formatter = DateTimeFormatter.ofPattern("yyMMdd");
-            dateLocalDate = LocalDate.parse(dateString, formatter);
-        }
-
-        return dateLocalDate;
-    }
 }

@@ -62,13 +62,20 @@ public class LoginActivity extends AppCompatActivity {
                             //SharedPreferences로 토큰 저장
                             setToken(token);
 
+                            //body에 있는 로그인 성공 메세지 저장
+                            String message = response.body().getMessage();
+
+                            //로그인 성공 메세지를 토스트 메세지로 출력
+                            Toast.makeText(LoginActivity.this, message, Toast.LENGTH_SHORT).show();
+
                             //MainActivity로 이동
                             Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                             startActivity(intent);
                         }
-                        //응답 실패(404): 아이디가 일치하지 않을 때
+                        //응답 실패(404): 아이디 또는 비밀번호가 일치하지 않을 때
                         else if (response.code() == 404) {
-
+                            //에러 메세지를 토스트 메세지로 출력
+                            Toast.makeText(LoginActivity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
                         }
                     }
 
@@ -98,8 +105,9 @@ public class LoginActivity extends AppCompatActivity {
 
     /* SharedPreferences로 토큰을 저장하는 함수 */
     void setToken(String token) {
-        SharedPreferences.Editor myEdit = sharedPreferences.edit();
-        myEdit.putString("jwt_token", token);
-        myEdit.apply();
+        sharedPreferences = getSharedPreferences("token", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("token", token);
+        editor.apply();
     }
 }
