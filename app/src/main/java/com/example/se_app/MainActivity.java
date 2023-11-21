@@ -3,9 +3,12 @@ package com.example.se_app;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -40,6 +43,7 @@ public class MainActivity extends AppCompatActivity {
 
     //당일 기록 가져오기
     void getTodayRecord() {
+
         String token = getToken();
         Call<RecordDTO.TodayRecord> call = service.todayrecord("Bearer " + token);
         call.enqueue(new Callback<RecordDTO.TodayRecord>() {
@@ -49,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
                 //응답 성공(200)
                 if (response.isSuccessful()) {
                     //당일 기록 저장
-                    int recordTime = response.body().getRecordTimeToday();
+                    int recordTime = response.body().setRecordTimeToday();
                 }
             }
             //서버 통신 실패
@@ -61,20 +65,40 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    /*위도, 경도 구하는 함수*/
+    Location location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+
+    final LocationListener gpsLocationListener = new LocationListener() {
+        // 위치정보를 전달할 때 호출
+        public void onLocationChanged(Location location) {
+            // 위치 리스너는 위치정보를 전달할 때 호출되므로 onLocationChanged()메소드 안에 위지청보를 처리를 작업을 구현
+            String provider = location.getProvider();  // 위치정보
+            double longitude = location.getLongitude(); // 위도
+            double latitude = location.getLatitude(); // 경도
+        } public void onStatusChanged(String provider, int status, Bundle extras) {
+
+        } public void onProviderEnabled(String provider) {
+
+        } public void onProviderDisabled(String provider) {
+
+        }
+    };
+
+
+
     //기록하기(출석하기)
     void startRecord() {
         String token = getToken();
-        Double setUserLatitude = 0.0;
-        Double setUserLongitude = 0.0;
-
-        Call<RecordDTO.StartRecord> call = service.startrecord("Bearer " + token, setUserLatitude, setUserLongitude);
+        //현재 위치 측정하는 코드 추가하기
+        double setUserLatitude = location.getLongitude();
+        double setUserLongitude = location.getLatitude();
+        RecordDTO.StartRecord startRecord = new RecordDTO.StartRecord(setUserLatitude, setUserLongitude);
+        Call<RecordDTO.StartRecord> call = service.startrecord("Bearer " + token, startRecord);
         call.enqueue(new Callback<RecordDTO.StartRecord>() {
             @Override
             public void onResponse(Call<RecordDTO.StartRecord> record, Response<RecordDTO.StartRecord> response) {
                 if (response.isSuccessful()) {
                     // 응답 성공(200)
-                    Double Latitude = response.body().getUserLatitude();
-                    Double Longitude = response.body().getUserLongitude();
                     String message = response.body().getMessage();
                     Toast.makeText(getApplicationContext(), message,Toast.LENGTH_SHORT).show();
                 } else {
@@ -96,18 +120,19 @@ public class MainActivity extends AppCompatActivity {
     //기록중단
     void stopRecord() {
         String token = getToken();
+        int recordTime = 0;
+        double userLatitude = location.getLongitude();
+        double userLongitude = location.getLatitude();
 
-        Call<RecordDTO.StopRecord> call = service.stoprecord("Bearer " + token);
+        RecordDTO.StopRecord stopRecord = new RecordDTO.StopRecord(recordTime, userLatitude, userLongitude);
+
+        Call<RecordDTO.StopRecord> call = service.stoprecord("Bearer " + token, stopRecord);
         call.enqueue(new Callback<RecordDTO.StopRecord>() {
             @Override
             public void onResponse(Call<RecordDTO.StopRecord> record, Response<RecordDTO.StopRecord> response) {
                 if (response.isSuccessful()) {
                     // 응답 성공(200)
-                    int recordTime = response.body().getRecordTime();
-                    Double userLatitude = response.body().getUserLatitude();
-                    Double userLongitude = response.body().getUserLongitude();
-                    String message = response.body().getMessage();
-                    Toast.makeText(getApplicationContext(), message,Toast.LENGTH_SHORT).show();
+                    // body 없음
                 } else {
                     // 응답 실패(403)
                     String message = response.body().getMessage();
@@ -120,16 +145,18 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(MainActivity.this, "서버와 통신을 실패하였습니다.", Toast.LENGTH_SHORT).show();
                 Log.e(TAG, "서버 통신 실패: " + t.getMessage());
             }
+
+
         });
+
+
     }
 
     //위치 보내기
     void Location() {
         String token = getToken();
-
-        //현재 위치 값을 여기 넣어!!!!!!!!!!!!!!
-        Double memberLatitude = 0.0; //경도
-        Double memberLongitude = 0.0; //위도
+        double memberLatitude = location.getLatitude(); //경도
+        double memberLongitude = location.getLongitude(); //위도
         int recordtime = 0;
         RecordDTO.Location location = new RecordDTO.Location(recordtime, memberLatitude, memberLongitude);
 
@@ -138,16 +165,12 @@ public class MainActivity extends AppCompatActivity {
             //서버 통신 성공
             @Override
             public void onResponse(Call<RecordDTO.Location> call, Response<RecordDTO.Location> response) {
-                //응답 성공(200)
                 if (response.isSuccessful()) {
-                    Double memberLatitude = response.body().getMemberLatitude();
-                    Double memberLongitude = response.body().getMemberLongitude();
-                    String message = response.body().getMessage();
-                    Toast.makeText(MainActivity.this, message, Toast.LENGTH_SHORT).show();
+                    // 응답 성공(200)
+                    // body 없음
                 } else {
                     // 응답 실패(401)
                     String message = response.body().getMessage();
-                    //토스트 출력
                     Toast.makeText(MainActivity.this, message, Toast.LENGTH_SHORT).show();
                 }
             }
@@ -161,9 +184,9 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private boolean isrunning = true;
+    private boolean isRunning = true;
     private Thread timeThread = null;
-    private Boolean isRunning;
+    final LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -186,8 +209,8 @@ public class MainActivity extends AppCompatActivity {
         btn_start.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (!isrunning) {
-                    isrunning = true;
+                if (!isRunning) {
+                    isRunning = true;
                     btn_start.setVisibility(View.INVISIBLE);
                     btn_stop.setVisibility(View.VISIBLE);
 
@@ -199,8 +222,8 @@ public class MainActivity extends AppCompatActivity {
         btn_stop.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (isrunning) {
-                    isrunning = false;
+                if (isRunning) {
+                    isRunning = false;
                     btn_stop.setVisibility(View.INVISIBLE);
                     btn_start.setVisibility(View.VISIBLE);
 
@@ -249,7 +272,6 @@ public class MainActivity extends AppCompatActivity {
             int i = 0;
 
             while (true) {
-                //isRunning 수정
                 while (isRunning) {
                     Message msg = new Message();
                     msg.arg1 = i++;

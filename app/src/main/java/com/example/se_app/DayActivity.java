@@ -54,12 +54,12 @@ public class DayActivity extends AppCompatActivity {
     }
 
     void getData(String token) {
-        Call<RankDTO.RankResponse> call = service.dayrank("Bearer " + token);
+        Call<RankDTO.RankResponse> call = service.dayrank();
         call.enqueue(new Callback<RankDTO.RankResponse>() {
             @Override
             public void onResponse(Call<RankDTO.RankResponse> call, Response<RankDTO.RankResponse> response) {
                 if (response.isSuccessful()) {
-                    List<RankDTO.RankResponse> rankList = response.body();
+                    List<RankDTO.RankResponse> rankList = (List<RankDTO.RankResponse>) response.body();
                     for (RankDTO.RankResponse rankItem : rankList) {
                         String memberName = rankItem.getMemberName();
                         String memberId = rankItem.getMemberId();

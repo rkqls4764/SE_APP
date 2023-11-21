@@ -2,6 +2,7 @@ package com.example.se_app.service;
 
 import com.example.se_app.dto.LoginDTO;
 import com.example.se_app.dto.MypageDTO;
+import com.example.se_app.dto.RankDTO;
 import com.example.se_app.dto.RecordDTO;
 import com.example.se_app.dto.RegisterDTO;
 
@@ -33,11 +34,11 @@ public interface Service {
 
     //랭킹 보기(출석 일수)
     @GET("/rank/day/{month}")
-    Call<RankDTO.RankResponse> dayrank(@Header("Authorization") String token);
+    Call<RankDTO.RankResponse> dayrank();
 
     //랭킹 보기(출석 시간)
     @GET("/rank/time/{month}")
-    Call<RankDTO.RankResponse> timerank(@Header("Authorization") String token);
+    Call<RankDTO.RankResponse> timerank();
 
 
     //jwt 사용
@@ -51,9 +52,9 @@ public interface Service {
 
     //기록 중단
     @POST("/record/stop")
-    Call<RecordDTO.StopRecord> stoprecord(@Header("Authorization") String token, @Body RecordDTO.StopRecord recordTime, @Body RecordDTO.StopRecord userLatitude, @Body RecordDTO.StopRecord userLongitude);
+    Call<RecordDTO.StopRecord> stoprecord(@Header("Authorization") String token, @Body RecordDTO.StopRecord recordTime, @Body RecordDTO.StopRecord userLatitude, @Body Double userLongitude);
 
     //위치 보내기
-    @POST("/record")
-    Call<RecordDTO.Location> location(@Header("Authorization") String token, @Body RecordDTO.Location memberLatitude, @Body RecordDTO.Location memberLongitude);
+    @POST("/record/location")
+    Call<RecordDTO.Location> location(@Header("Authorization") String token, @Body RecordDTO.Location memberLatitude, @Body RecordDTO.Location memberLongitude, @Body RecordDTO.Location recordTime);
 }
