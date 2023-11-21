@@ -65,13 +65,13 @@ public interface Service {
 
     //기록하기
     @POST("/record")
-    Call<RecordDTO.StartRecord> startrecord(@Header("Authorization") String token, @Body RecordDTO.StartRecord userLatitude, @Body RecordDTO.StartRecord userLongitude);
+    Call<RecordDTO.StartRecord> startrecord(@Header("Authorization") String token, @Body RecordDTO.StartRecord startRecord);
 
     //기록 중단
     @POST("/record/stop")
-    Call<RecordDTO.StopRecord> stoprecord(@Header("Authorization") String token, @Body RecordDTO.StopRecord recordTime, @Body RecordDTO.StopRecord userLatitude, @Body Double userLongitude);
+    Call<RecordDTO.StopRecord> stoprecord(@Header("Authorization") String token, @Body RecordDTO.StopRecord stopRecord);
 
     //위치 보내기
     @POST("/record/location")
-    Call<RecordDTO.Location> location(@Header("Authorization") String token, @Body RecordDTO.Location memberLatitude, @Body RecordDTO.Location memberLongitude, @Body RecordDTO.Location recordTime);
+    Call<RecordDTO.Location> location(@Header("Authorization") String token, @Body RecordDTO.Location location);
 }

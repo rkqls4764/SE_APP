@@ -1,14 +1,18 @@
 package com.example.se_app;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -31,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = MainActivity.class.getSimpleName();
     private SharedPreferences sharedPreferences;    //SharedPreferences에서 토큰 가져오기
     private TextView tv_time;
+    private int recordTime;
 
     Service service = RetrofitInstance.getRetrofitInstance().create(Service.class);
 
@@ -40,6 +45,37 @@ public class MainActivity extends AppCompatActivity {
         String token = sharedPreferences.getString("jwt_token", "");
         return token;
     }
+
+    /*위도, 경도 구하기*/
+    Location getLocation() {
+        final LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+
+        if (Build.VERSION.SDK_INT >= 23 && ContextCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(MainActivity.this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, 0);
+        } else {
+            Location location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 1, gpsLocationListener);
+            lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000, 1, gpsLocationListener);
+            return location;
+        }
+        return null;
+    }
+
+    private final LocationListener gpsLocationListener = new LocationListener() {
+        public void onLocationChanged(Location location) {
+            double longitude = location.getLongitude(); // 위도
+            double latitude = location.getLatitude(); // 경도
+        }
+
+        public void onStatusChanged(String provider, int status, Bundle extras) {
+        }
+
+        public void onProviderEnabled(String provider) {
+        }
+
+        public void onProviderDisabled(String provider) {
+        }
+    };
 
     //당일 기록 가져오기
     void getTodayRecord() {
@@ -53,7 +89,7 @@ public class MainActivity extends AppCompatActivity {
                 //응답 성공(200)
                 if (response.isSuccessful()) {
                     //당일 기록 저장
-                    int recordTime = response.body().setRecordTimeToday();
+                    recordTime = response.body().setRecordTimeToday();
                 }
             }
             //서버 통신 실패
@@ -65,33 +101,11 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    /*위도, 경도 구하는 함수*/
-    Location location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-
-    final LocationListener gpsLocationListener = new LocationListener() {
-        // 위치정보를 전달할 때 호출
-        public void onLocationChanged(Location location) {
-            // 위치 리스너는 위치정보를 전달할 때 호출되므로 onLocationChanged()메소드 안에 위지청보를 처리를 작업을 구현
-            String provider = location.getProvider();  // 위치정보
-            double longitude = location.getLongitude(); // 위도
-            double latitude = location.getLatitude(); // 경도
-        } public void onStatusChanged(String provider, int status, Bundle extras) {
-
-        } public void onProviderEnabled(String provider) {
-
-        } public void onProviderDisabled(String provider) {
-
-        }
-    };
-
-
-
     //기록하기(출석하기)
     void startRecord() {
         String token = getToken();
-        //현재 위치 측정하는 코드 추가하기
-        double setUserLatitude = location.getLongitude();
-        double setUserLongitude = location.getLatitude();
+        double setUserLatitude = getLocation().getLongitude();
+        double setUserLongitude = getLocation().getLatitude();
         RecordDTO.StartRecord startRecord = new RecordDTO.StartRecord(setUserLatitude, setUserLongitude);
         Call<RecordDTO.StartRecord> call = service.startrecord("Bearer " + token, startRecord);
         call.enqueue(new Callback<RecordDTO.StartRecord>() {
@@ -120,9 +134,8 @@ public class MainActivity extends AppCompatActivity {
     //기록중단
     void stopRecord() {
         String token = getToken();
-        int recordTime = 0;
-        double userLatitude = location.getLongitude();
-        double userLongitude = location.getLatitude();
+        double userLatitude = getLocation().getLongitude();
+        double userLongitude = getLocation().getLatitude();
 
         RecordDTO.StopRecord stopRecord = new RecordDTO.StopRecord(recordTime, userLatitude, userLongitude);
 
@@ -145,20 +158,15 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(MainActivity.this, "서버와 통신을 실패하였습니다.", Toast.LENGTH_SHORT).show();
                 Log.e(TAG, "서버 통신 실패: " + t.getMessage());
             }
-
-
         });
-
-
     }
 
     //위치 보내기
     void Location() {
         String token = getToken();
-        double memberLatitude = location.getLatitude(); //경도
-        double memberLongitude = location.getLongitude(); //위도
-        int recordtime = 0;
-        RecordDTO.Location location = new RecordDTO.Location(recordtime, memberLatitude, memberLongitude);
+        double memberLatitude = getLocation().getLatitude(); //경도
+        double memberLongitude = getLocation().getLongitude(); //위도
+        RecordDTO.Location location = new RecordDTO.Location(recordTime, memberLatitude, memberLongitude);
 
         Call<RecordDTO.Location> call = service.location("Bearer " + token, location);
         call.enqueue(new Callback<RecordDTO.Location>() {
@@ -183,14 +191,15 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-
     private boolean isRunning = true;
     private Thread timeThread = null;
-    final LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        final LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
         Button btn_info = findViewById(R.id.btn_mypage);
         btn_info.setOnClickListener(new View.OnClickListener() {
@@ -213,7 +222,9 @@ public class MainActivity extends AppCompatActivity {
                     isRunning = true;
                     btn_start.setVisibility(View.INVISIBLE);
                     btn_stop.setVisibility(View.VISIBLE);
-
+                    getTodayRecord();
+                    Location();
+                    startRecord();
                     timeThread = new Thread(new timeThread());
                     timeThread.start();
                 }
@@ -226,12 +237,14 @@ public class MainActivity extends AppCompatActivity {
                     isRunning = false;
                     btn_stop.setVisibility(View.INVISIBLE);
                     btn_start.setVisibility(View.VISIBLE);
-
+                    Location();
+                    stopRecord();
                     tv_time.setText("");
                     timeThread.interrupt();
                 }
             }
         });
+
         Button btn_calendar = findViewById(R.id.btn_calendar);
         btn_calendar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -259,6 +272,7 @@ public class MainActivity extends AppCompatActivity {
             int sec = (msg.arg1 / 100) % 60;
             int min = (msg.arg1 / 100) / 60;
             int hour = (msg.arg1 / 100) / 360;
+            recordTime = msg.arg1;
             //1000이 1초 1000*60 은 1분 1000*60*10은 10분 1000*60*60은 한시간
 
             @SuppressLint("DefaultLocale") String result = String.format("%02d:%02d:%02d", hour, min, sec);
@@ -293,5 +307,4 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
-
 }
