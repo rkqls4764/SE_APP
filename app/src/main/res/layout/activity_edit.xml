@@ -33,7 +33,7 @@
             android:id="@+id/et_password"
             android:layout_width="260dp"
             android:layout_height="58dp"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="100dp"
             android:ems="10"
             android:inputType="text"
             android:text="비밀번호"
@@ -42,7 +42,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.496"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/et_studentId" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <EditText
             android:id="@+id/et_name"
@@ -88,21 +88,6 @@
             app:layout_constraintHorizontal_bias="0.496"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/et_major" />
-
-        <EditText
-            android:id="@+id/et_studentId"
-            android:layout_width="260dp"
-            android:layout_height="58dp"
-            android:layout_marginTop="50dp"
-            android:ems="10"
-            android:inputType="text"
-            android:text="학번"
-            android:textColor="#999999"
-            android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.496"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
 
         <Spinner
             android:id="@+id/spinner"
@@ -154,6 +139,7 @@
             app:layout_constraintEnd_toStartOf="@+id/btn_ok"
             app:layout_constraintStart_toStartOf="@+id/et_birth"
             app:layout_constraintTop_toBottomOf="@+id/spinner" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </LinearLayout>

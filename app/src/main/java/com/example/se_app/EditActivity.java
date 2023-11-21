@@ -34,7 +34,6 @@ public class EditActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit);
 
-        EditText et_studentId = findViewById(R.id.et_studentId); //학번(아이디)
         EditText et_password = findViewById(R.id.et_password); //비밀번호
         EditText et_name = findViewById(R.id.et_name); //이름
         EditText et_major = findViewById(R.id.et_major); //학과
@@ -60,7 +59,7 @@ public class EditActivity extends AppCompatActivity {
         String token = getToken();
 
         //사용자 정보 가져오기
-        getUserData(token, et_studentId, et_password, et_name, et_major, et_birth, sp_state);
+        getUserData(token, et_password, et_name, et_major, et_birth, sp_state);
 
         //확인 버튼 클릭 시 실행
         clickBtnOk(token, et_password, et_name, et_major, et_birth);
@@ -77,7 +76,7 @@ public class EditActivity extends AppCompatActivity {
     }
 
     /* 사용자의 정보를 가져오는 함수 */
-    void getUserData(String token, EditText et_studentId, EditText et_password, EditText et_name, EditText et_major, EditText et_birth, Spinner sp_state) {
+    void getUserData(String token, EditText et_password, EditText et_name, EditText et_major, EditText et_birth, Spinner sp_state) {
         Call<MypageDTO.MypageResponse> call = service.mypage("Bearer " + token);
         call.enqueue(new Callback<MypageDTO.MypageResponse>() {
             //서버와 통신 성공
@@ -86,7 +85,6 @@ public class EditActivity extends AppCompatActivity {
                 //응답 성공(200): 데이터베이스에서 회원 정보를 제대로 읽어왔을 때
                 if (response.isSuccessful()) {
                     //정보 출력
-                    et_studentId.setText("학번 : " + response.body().getMemberId());
                     et_password.setText("비밀번호 : " + response.body().getMemberPw());
                     et_name.setText("이름 : " + response.body().getMemberName());
                     et_major.setText("학과 : " + response.body().getMemberMajor());
