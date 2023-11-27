@@ -7,58 +7,13 @@
     tools:context=".RegisterActivity">
 
     <EditText
-        android:id="@+id/et_studentId"
-        android:layout_width="260dp"
-        android:layout_height="58dp"
-        android:layout_marginTop="176dp"
-        android:ems="10"
-        android:inputType="text"
-        android:hint="학번"
-        android:textColor="#999999"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.496"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <EditText
-        android:id="@+id/et_password"
-        android:layout_width="260dp"
-        android:layout_height="58dp"
-        android:layout_marginTop="10dp"
-        android:ems="10"
-        android:inputType="text"
-        android:hint="비밀번호"
-        android:textColor="#999999"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.496"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/et_studentId" />
-
-    <EditText
-        android:id="@+id/et_name"
-        android:layout_width="260dp"
-        android:layout_height="58dp"
-        android:layout_marginTop="10dp"
-        android:ems="10"
-        android:inputType="text"
-        android:hint="이름"
-        android:textColor="#999999"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.496"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/et_password" />
-
-    <EditText
         android:id="@+id/et_major"
         android:layout_width="260dp"
         android:layout_height="58dp"
         android:layout_marginTop="10dp"
         android:ems="10"
-        android:inputType="text"
         android:hint="학과"
+        android:inputType="text"
         android:textColor="#999999"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
@@ -72,14 +27,59 @@
         android:layout_height="58dp"
         android:layout_marginTop="10dp"
         android:ems="10"
-        android:inputType="text"
         android:hint="생년월일(6자리)"
+        android:inputType="text"
         android:textColor="#999999"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.496"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/et_major" />
+
+    <EditText
+        android:id="@+id/et_name"
+        android:layout_width="260dp"
+        android:layout_height="58dp"
+        android:layout_marginTop="10dp"
+        android:ems="10"
+        android:hint="이름"
+        android:inputType="text"
+        android:textColor="#999999"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.496"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/et_password" />
+
+    <EditText
+        android:id="@+id/et_password"
+        android:layout_width="260dp"
+        android:layout_height="58dp"
+        android:layout_marginTop="10dp"
+        android:ems="10"
+        android:hint="비밀번호"
+        android:inputType="text"
+        android:textColor="#999999"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.496"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/et_studentId" />
+
+    <EditText
+        android:id="@+id/et_studentId"
+        android:layout_width="260dp"
+        android:layout_height="58dp"
+        android:layout_marginTop="176dp"
+        android:ems="10"
+        android:inputType="text"
+        android:hint="학번"
+        android:textColor="#999999"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.496"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/btn_register"
@@ -127,19 +127,17 @@
 
     <Spinner
         android:id="@+id/sp_state"
-        android:entries="@array/state"
         android:layout_width="0dp"
         android:layout_height="50dp"
-        android:layout_marginTop="10dp"
+        android:entries="@array/state"
         app:layout_constraintEnd_toEndOf="@+id/et_birth"
         app:layout_constraintStart_toEndOf="@+id/tv_state"
-        app:layout_constraintTop_toBottomOf="@+id/et_birth" />
+        tools:layout_editor_absoluteY="516dp" />
 
     <TextView
         android:id="@+id/tv_state"
         android:layout_width="45dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
         android:text="상태"
         android:textAlignment="center"
         android:textColor="#636363"
@@ -147,5 +145,5 @@
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@+id/sp_state"
         app:layout_constraintStart_toStartOf="@+id/et_birth"
-        app:layout_constraintTop_toBottomOf="@+id/et_birth" />
+        app:layout_constraintTop_toTopOf="@+id/sp_state" />
 </androidx.constraintlayout.widget.ConstraintLayout>
