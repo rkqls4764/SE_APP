@@ -79,6 +79,7 @@ public class CalendarActivity extends AppCompatActivity {
     String getToken() {
         SharedPreferences sharedPreferences = getSharedPreferences("MySharedPref", MODE_PRIVATE);
         String token = sharedPreferences.getString("jwt_token", "");
+        Log.d("TAG", "토큰 리턴 성공");
         return token;
     }
 
@@ -102,6 +103,8 @@ public class CalendarActivity extends AppCompatActivity {
                 if (response.isSuccessful()) {
                     //공지사항 출력
                     tv_notice.setText(response.body().getNoticeContent());
+
+                    Log.d("TAG", "공지사항 조회 성공");
                 }
                 //응답 실패(404): 공지사항이 없는 경우
                 else if (response.code() == 404) {
@@ -109,6 +112,8 @@ public class CalendarActivity extends AppCompatActivity {
                     String message = response.body().getMessage();
                     //공지사항 칸에 메세지 출력
                     tv_notice.setText(message);
+
+                    Log.d("TAG", "공지사항 조회 실패: 공지사항 없음");
                 }
             }
 
@@ -134,6 +139,8 @@ public class CalendarActivity extends AppCompatActivity {
                     String time = secondToTime(response.body().getStudyGoal());
                     //목표시간 설정
                     tv_goal.setText("목표시간 : " + time);
+
+                    Log.d("TAG", "목표시간 조회 성공");
                 }
             }
 
@@ -159,11 +166,15 @@ public class CalendarActivity extends AppCompatActivity {
                     String time = secondToTime(response.body().getRecordTime());
                     //출석 기록 설정
                     tv_time.setText(time);
+
+                    Log.d("TAG", "출석 기록 조회 성공");
                 }
                 //응답 실패(404): 해당 날짜에 기록이 없는 경우
                 else if (response.body() == null) {
                     //출석 기록 설정
                     tv_time.setText("00:00:00");
+
+                    Log.d("TAG", "출석 기록 조회 실패: 출석 기록 없음");
                 }
             }
 

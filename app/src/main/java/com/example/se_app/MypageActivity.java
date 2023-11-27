@@ -58,6 +58,7 @@ public class MypageActivity extends AppCompatActivity {
     String getToken() {
         SharedPreferences sharedPreferences = getSharedPreferences("token", MODE_PRIVATE);
         String token = sharedPreferences.getString("token", "");
+        Log.d("TAG", "토큰 리턴 성공");
         return token;
     }
 
@@ -78,6 +79,8 @@ public class MypageActivity extends AppCompatActivity {
                     tv_major.setText("학과 : " + response.body().getMemberMajor().toString());
                     tv_birth.setText("생년월일 : " + response.body().getMemberBirth().toString());
                     tv_state.setText("상태 : " + response.body().getMemberState().toString());
+
+                    Log.d("TAG", "정보 조회 성공");
                 }
             }
 

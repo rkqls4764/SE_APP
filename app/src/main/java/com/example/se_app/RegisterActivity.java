@@ -89,11 +89,15 @@ public class RegisterActivity extends AppCompatActivity {
                             //LoginActivity로 이동
                             Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
                             startActivity(intent);
+
+                            Log.d("TAG", "회원가입 성공");
                         }
                         //응답 실패(404): 아이디가 중복일 경우
                         else if (response.code() == 404) {
                             //에러 메세지를 토스트 메세지로 출력
                             Toast.makeText(RegisterActivity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
+
+                            Log.d("TAG", "회원가입 실패: 아이디 중복");
                         }
                     }
 
@@ -114,7 +118,7 @@ public class RegisterActivity extends AppCompatActivity {
         btn_cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //회원가입 실패 메세지를 토스트 메세지로 출력
+                //회원가입 취소 메세지를 토스트 메세지로 출력
                 Toast.makeText(RegisterActivity.this, "회원가입을 취소합니다.", Toast.LENGTH_SHORT).show();
 
                 //LoginActivity로 이동(뒤로가기)

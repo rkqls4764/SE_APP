@@ -72,6 +72,7 @@ public class EditActivity extends AppCompatActivity {
     String getToken() {
         SharedPreferences sharedPreferences = getSharedPreferences("MySharedPref", MODE_PRIVATE);
         String token = sharedPreferences.getString("jwt_token", "");
+        Log.d("TAG", "토큰 리턴 성공");
         return token;
     }
 
@@ -91,6 +92,8 @@ public class EditActivity extends AppCompatActivity {
                     et_edit_birth.setText("생년월일 : " + response.body().getMemberBirth().toString());
                     String state = response.body().getMemberState().toString();
                     sp_edit_state.setSelection(getIndex(sp_edit_state, state));
+
+                    Log.d("TAG", "정보 출력 성공");
                 }
             }
 
@@ -131,6 +134,8 @@ public class EditActivity extends AppCompatActivity {
                             //MypageActivity로 이동
                             Intent intent = new Intent(EditActivity.this, MypageActivity.class);
                             startActivity(intent);
+
+                            Log.d("TAG", "정보 수정 성공");
                         }
                     }
 
