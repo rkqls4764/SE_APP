@@ -71,13 +71,13 @@ public class MypageActivity extends AppCompatActivity {
                 //응답 성공(200): 데이터베이스에서 회원 정보를 제대로 읽어왔을 때
                 if (response.isSuccessful()) {
                     //정보 출력
-                    tv_titleName.setText(response.body().getMemberName());
-                    tv_studentId.setText("학번 : " + response.body().getMemberId());
+                    tv_titleName.setText(response.body().getMemberName().toString());
+                    tv_studentId.setText("학번 : " + response.body().getMemberId().toString());
                     tv_password.setText("비밀번호 : " + response.body().getMemberPw());
-                    tv_name.setText("이름 : " + response.body().getMemberName());
-                    tv_major.setText("학과 : " + response.body().getMemberMajor());
-                    tv_birth.setText("생년월일 : " + response.body().getMemberBirth());
-                    tv_state.setText("상태 : " + response.body().getMemberState());
+                    tv_name.setText("이름 : " + response.body().getMemberName().toString());
+                    tv_major.setText("학과 : " + response.body().getMemberMajor().toString());
+                    tv_birth.setText("생년월일 : " + response.body().getMemberBirth().toString());
+                    tv_state.setText("상태 : " + response.body().getMemberState().toString());
                 }
             }
 

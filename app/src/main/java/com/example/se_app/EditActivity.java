@@ -85,11 +85,11 @@ public class EditActivity extends AppCompatActivity {
                 //응답 성공(200): 데이터베이스에서 회원 정보를 제대로 읽어왔을 때
                 if (response.isSuccessful()) {
                     //정보 출력
-                    et_password.setText("비밀번호 : " + response.body().getMemberPw());
-                    et_name.setText("이름 : " + response.body().getMemberName());
-                    et_major.setText("학과 : " + response.body().getMemberMajor());
-                    et_birth.setText("생년월일 : " + response.body().getMemberBirth());
-                    String state = response.body().getMemberState();
+                    et_password.setText("비밀번호 : " + response.body().getMemberPw().toString());
+                    et_name.setText("이름 : " + response.body().getMemberName().toString());
+                    et_major.setText("학과 : " + response.body().getMemberMajor().toString());
+                    et_birth.setText("생년월일 : " + response.body().getMemberBirth().toString());
+                    String state = response.body().getMemberState().toString();
                     sp_state.setSelection(getIndex(sp_state, state));
                 }
             }
