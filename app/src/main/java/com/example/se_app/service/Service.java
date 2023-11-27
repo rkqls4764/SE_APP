@@ -6,7 +6,6 @@ import com.example.se_app.dto.LoginDTO;
 import com.example.se_app.dto.MypageDTO;
 import com.example.se_app.dto.NoticeDTO;
 import com.example.se_app.dto.RankDTO;
-import com.example.se_app.dto.RankDTO;
 import com.example.se_app.dto.RecordDTO;
 import com.example.se_app.dto.RegisterDTO;
 
