@@ -201,16 +201,6 @@ public class MainActivity extends AppCompatActivity {
 
         final LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
-        Button btn_info = findViewById(R.id.btn_mypage);
-        btn_info.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //마이페이지 화면으로 이동
-                Intent intent = new Intent(MainActivity.this, MypageActivity.class);
-                startActivity(intent);
-            }
-        });
-
         // 타이머 구현
         tv_time = findViewById(R.id.tv_time);
         Button btn_start = findViewById(R.id.btn_start);
@@ -245,6 +235,16 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        Button btn_mypage = findViewById(R.id.btn_mypage);
+        btn_mypage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //마이페이지 화면으로 이동
+                Intent intent = new Intent(MainActivity.this, MypageActivity.class);
+                startActivity(intent);
+            }
+        });
+
         Button btn_calendar = findViewById(R.id.btn_calendar);
         btn_calendar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -259,7 +259,7 @@ public class MainActivity extends AppCompatActivity {
         btn_rank.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //랭크 화면으로 이동
+                //랭킹 화면으로 이동
                 Intent intent = new Intent(MainActivity.this, RankActivity.class);
                 startActivity(intent);
             }
