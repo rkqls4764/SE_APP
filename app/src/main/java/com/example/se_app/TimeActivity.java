@@ -1,8 +1,10 @@
 package com.example.se_app;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
@@ -29,15 +31,27 @@ public class TimeActivity extends AppCompatActivity {
     private ArrayAdapter<String> adapter;
     Service service = RetrofitInstance.getRetrofitInstance().create(Service.class);
 
+
+    //날짜별 랭킹 화면으로 이동
+    void clickDayRank() {
+
+        Button btn_day = findViewById(R.id.btn_day);
+        btn_day.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(TimeActivity.this, DayActivity.class);
+                startActivity(intent);
+            }
+        });
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_day);
+        clickDayRank();
 
-        Button btn_time = findViewById(R.id.btn_time);
-        Button btn_day = findViewById(R.id.btn_day);
         ListView list = findViewById(R.id.list);
-
 
         //배열 연결과정
         adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, data);
