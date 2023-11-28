@@ -81,7 +81,7 @@ public class RegisterActivity extends AppCompatActivity {
                         //응답 성공(200): 모든 항목을 입력했을 경우
                         if (response.isSuccessful()) {
                             //body의 회원가입 성공 메세지를 저장
-                            String message = response.body().getMessage();
+                            String message = response.body().getMessage().toString();
 
                             //회원가입 성공 메세지를 토스트 메세지로 띄움
                             Toast.makeText(RegisterActivity.this, message, Toast.LENGTH_SHORT).show();

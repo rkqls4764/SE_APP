@@ -29,6 +29,7 @@ public class CalendarActivity extends AppCompatActivity {
 
     private static final String TAG = RegisterActivity.class.getSimpleName();
     Service service = RetrofitInstance.getRetrofitInstance().create(Service.class);
+    String select_date = "";
 
     /* 화면 시작 시 실행 함수 */
     @Override
@@ -54,6 +55,9 @@ public class CalendarActivity extends AppCompatActivity {
         calendarView.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
             @Override
             public void onSelectedDayChange(@NonNull CalendarView calendarView, int year, int month, int day) {
+                //선택한 날짜 저장
+                select_date = year + "-" + (month + 1) + "-" + day;
+
                 //선택한 날짜 출력
                 tv_day.setText(year + "년 " + (month + 1) + "월 " + day + "일");
 
@@ -63,7 +67,7 @@ public class CalendarActivity extends AppCompatActivity {
 
                 //출석 기록 조회
                 TextView tv_time = findViewById(R.id.tv_time);
-                getDayTime(token, (month + 1), day, tv_time);
+                getDayTime(token, tv_time);
             }
         });
 
@@ -77,8 +81,8 @@ public class CalendarActivity extends AppCompatActivity {
 
     /* SharedPreferences에서 토큰을 가져오는 함수 */
     String getToken() {
-        SharedPreferences sharedPreferences = getSharedPreferences("MySharedPref", MODE_PRIVATE);
-        String token = sharedPreferences.getString("jwt_token", "");
+        SharedPreferences sharedPreferences = getSharedPreferences("token", MODE_PRIVATE);
+        String token = sharedPreferences.getString("token", "");
         Log.d("TAG", "토큰 리턴 성공");
         return token;
     }
@@ -102,14 +106,14 @@ public class CalendarActivity extends AppCompatActivity {
                 //응답 성공(200): 공지사항이 있는 경우
                 if (response.isSuccessful()) {
                     //공지사항 출력
-                    tv_notice.setText(response.body().getNoticeContent());
+                    tv_notice.setText(response.body().getNoticeContent().toString());
 
                     Log.d("TAG", "공지사항 조회 성공");
                 }
                 //응답 실패(404): 공지사항이 없는 경우
                 else if (response.code() == 404) {
                     //'공지사항 없음' 메세지 저장
-                    String message = response.body().getMessage();
+                    String message = response.body().getMessage().toString();
                     //공지사항 칸에 메세지 출력
                     tv_notice.setText(message);
 
@@ -154,8 +158,8 @@ public class CalendarActivity extends AppCompatActivity {
     }
 
     /* 캘린더에서 선택한 날짜의 출석 기록을 조회하는 함수 */
-    void getDayTime(String token, int month, int day, TextView tv_time) {
-        Call<CalendarDTO.TimeResponse> call = service.time("Bearer" + token, month, day);
+    void getDayTime(String token, TextView tv_time) {
+        Call<CalendarDTO.TimeResponse> call = service.time("Bearer " + token, select_date);
         call.enqueue(new Callback<CalendarDTO.TimeResponse>() {
             //서버와 통신 성공
             @Override

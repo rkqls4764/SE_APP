@@ -51,7 +51,7 @@ public class EditActivity extends AppCompatActivity {
             //아무것도 선택되지 않은 경우
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
-                state = "";
+
             }
         });
 
@@ -59,7 +59,7 @@ public class EditActivity extends AppCompatActivity {
         String token = getToken();
 
         //사용자 정보 가져오기
-        getUserData(token, et_edit_password, et_edit_name, et_edit_major, et_edit_birth, sp_edit_state);
+        getUserData(token, et_edit_name, et_edit_major, et_edit_birth, sp_edit_state);
 
         //확인 버튼 클릭 시 실행
         clickBtnOk(token, et_edit_password, et_edit_name, et_edit_major, et_edit_birth);
@@ -70,14 +70,14 @@ public class EditActivity extends AppCompatActivity {
 
     /* SharedPreferences에서 토큰을 가져오는 함수 */
     String getToken() {
-        SharedPreferences sharedPreferences = getSharedPreferences("MySharedPref", MODE_PRIVATE);
-        String token = sharedPreferences.getString("jwt_token", "");
+        SharedPreferences sharedPreferences = getSharedPreferences("token", MODE_PRIVATE);
+        String token = sharedPreferences.getString("token", "");
         Log.d("TAG", "토큰 리턴 성공");
         return token;
     }
 
     /* 사용자의 정보를 가져오는 함수 */
-    void getUserData(String token, EditText et_edit_password, EditText et_edit_name, EditText et_edit_major, EditText et_edit_birth, Spinner sp_edit_state) {
+    void getUserData(String token, EditText et_edit_name, EditText et_edit_major, EditText et_edit_birth, Spinner sp_edit_state) {
         Call<MypageDTO.MypageResponse> call = service.mypage("Bearer " + token);
         call.enqueue(new Callback<MypageDTO.MypageResponse>() {
             //서버와 통신 성공
@@ -86,7 +86,6 @@ public class EditActivity extends AppCompatActivity {
                 //응답 성공(200): 데이터베이스에서 회원 정보를 제대로 읽어왔을 때
                 if (response.isSuccessful()) {
                     //정보 출력
-                    et_edit_password.setText("비밀번호 : " + response.body().getMemberPw().toString());
                     et_edit_name.setText("이름 : " + response.body().getMemberName().toString());
                     et_edit_major.setText("학과 : " + response.body().getMemberMajor().toString());
                     et_edit_birth.setText("생년월일 : " + response.body().getMemberBirth().toString());
