@@ -70,19 +70,18 @@ public class LoginActivity extends AppCompatActivity {
                                 Toast.makeText(LoginActivity.this, message, Toast.LENGTH_SHORT).show();
                             }
 
-                            /*
                             //MainActivity로 이동
                             Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                             startActivity(intent);
-                            */
-
-                            Intent intent = new Intent(LoginActivity.this, CalendarActivity.class);
-                            startActivity(intent);
+                            
+                            Log.d("TAG", "로그인 성공");
                         }
                         //응답 실패(404): 아이디 또는 비밀번호가 일치하지 않을 때
                         else if (response.code() == 404) {
                             //에러 메세지를 토스트 메세지로 출력
                             Toast.makeText(LoginActivity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
+
+                            Log.d("TAG", "로그인 실패: 아이디 또는 비밀번호 불일치");
                         }
                     }
 
@@ -116,5 +115,6 @@ public class LoginActivity extends AppCompatActivity {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString("token", token);
         editor.apply();
+        Log.d("TAG", "토큰 저장 완료");
     }
 }
