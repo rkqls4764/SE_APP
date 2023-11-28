@@ -62,14 +62,6 @@ public class LoginActivity extends AppCompatActivity {
                             //SharedPreferences로 토큰 저장
                             setToken(token);
 
-                            //body에 있는 로그인 성공 메세지 저장
-                            String message = response.body().getMessage();
-
-                            //로그인 성공 메세지를 토스트 메세지로 출력
-                            if (message != null) {
-                                Toast.makeText(LoginActivity.this, message, Toast.LENGTH_SHORT).show();
-                            }
-
                             //MainActivity로 이동
                             Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                             startActivity(intent);
