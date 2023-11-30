@@ -12,8 +12,12 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.se_app.dto.LoginDTO;
+import com.example.se_app.dto.ResponseUtilDTO;
 import com.example.se_app.instance.RetrofitInstance;
 import com.example.se_app.service.Service;
+import com.google.gson.Gson;
+
+import java.io.IOException;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -68,12 +72,37 @@ public class LoginActivity extends AppCompatActivity {
                             
                             Log.d("TAG", "로그인 성공");
                         }
-                        //응답 실패(404): 아이디 또는 비밀번호가 일치하지 않을 때
+                        //응답 실패(404): 아이디가 일치하지 않을 때
                         else if (response.code() == 404) {
                             //에러 메세지를 토스트 메세지로 출력
-                            Toast.makeText(LoginActivity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
-
-                            Log.d("TAG", "로그인 실패: 아이디 또는 비밀번호 불일치");
+                            String errorMessage = "";
+                            if (response.errorBody() != null) {
+                                try {
+                                    // 에러 응답을 DTO로 변환
+                                    ResponseUtilDTO.MessageResponse errorResponse = new Gson().fromJson(response.errorBody().string(), ResponseUtilDTO.MessageResponse.class);
+                                    errorMessage = errorResponse.getMessage();
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                            Log.e(TAG, "로그인 실패: " + errorMessage);
+                            Toast.makeText(LoginActivity.this, errorMessage, Toast.LENGTH_SHORT).show();
+                        }
+                        //응답 실패(401): 비밀번호가 일지하지 않을 때
+                        else if (response.code() == 401) {
+                            //에러 메세지를 토스트 메세지로 출력
+                            String errorMessage = "알 수 없는 오류 발생";
+                            if (response.errorBody() != null) {
+                                try {
+                                    // 에러 응답을 DTO로 변환
+                                    ResponseUtilDTO.MessageResponse errorResponse = new Gson().fromJson(response.errorBody().string(), ResponseUtilDTO.MessageResponse.class);
+                                    errorMessage = errorResponse.getMessage();
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                            Log.e(TAG, "로그인 실패: " + errorMessage);
+                            Toast.makeText(LoginActivity.this, errorMessage, Toast.LENGTH_SHORT).show();
                         }
                     }
 

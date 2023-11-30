@@ -15,9 +15,12 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.se_app.dto.CalendarDTO;
 import com.example.se_app.dto.NoticeDTO;
+import com.example.se_app.dto.ResponseUtilDTO;
 import com.example.se_app.instance.RetrofitInstance;
 import com.example.se_app.service.Service;
+import com.google.gson.Gson;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -112,10 +115,19 @@ public class CalendarActivity extends AppCompatActivity {
                 }
                 //응답 실패(404): 공지사항이 없는 경우
                 else if (response.code() == 404) {
-                    //'공지사항 없음' 메세지 저장
-                    String message = response.body().getMessage().toString();
+                    //에러 메세지를 토스트 메세지로 출력
+                    String errorMessage = "";
+                    if (response.errorBody() != null) {
+                        try {
+                            // 에러 응답을 DTO로 변환
+                            ResponseUtilDTO.MessageResponse errorResponse = new Gson().fromJson(response.errorBody().string(), ResponseUtilDTO.MessageResponse.class);
+                            errorMessage = errorResponse.getMessage();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
                     //공지사항 칸에 메세지 출력
-                    tv_notice.setText(message);
+                    tv_notice.setText(errorMessage);
 
                     Log.d("TAG", "공지사항 조회 실패: 공지사항 없음");
                 }
