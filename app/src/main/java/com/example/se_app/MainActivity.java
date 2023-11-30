@@ -36,13 +36,15 @@ public class MainActivity extends AppCompatActivity {
     private SharedPreferences sharedPreferences;    //SharedPreferences에서 토큰 가져오기
     private TextView tv_time;
     private int recordTime;
+    private Button btn_start;
+    private Button btn_stop;
 
     Service service = RetrofitInstance.getRetrofitInstance().create(Service.class);
 
     /* SharedPreferences에서 토큰을 가져오는 함수 */
     String getToken() {
-        SharedPreferences sharedPreferences = getSharedPreferences("MySharedPref", MODE_PRIVATE);
-        String token = sharedPreferences.getString("jwt_token", "");
+        SharedPreferences sharedPreferences = getSharedPreferences("token", MODE_PRIVATE);
+        String token = sharedPreferences.getString("token", "");
         return token;
     }
 
@@ -79,7 +81,7 @@ public class MainActivity extends AppCompatActivity {
 
     //당일 기록 가져오기
     void getTodayRecord() {
-
+        Log.d(TAG, "당일기록가져오기");
         String token = getToken();
         Call<RecordDTO.TodayRecord> call = service.todayrecord("Bearer " + token);
         call.enqueue(new Callback<RecordDTO.TodayRecord>() {
@@ -111,14 +113,15 @@ public class MainActivity extends AppCompatActivity {
         call.enqueue(new Callback<RecordDTO.StartRecord>() {
             @Override
             public void onResponse(Call<RecordDTO.StartRecord> record, Response<RecordDTO.StartRecord> response) {
-                if (response.isSuccessful()) {
+                if (response.isSuccessful() && response.body() != null) {
                     // 응답 성공(200)
-                    String message = response.body().getMessage();
-                    Toast.makeText(getApplicationContext(), message,Toast.LENGTH_SHORT).show();
+                    // body 없음
                 } else {
-                    // 응답 실패(403)
-                    String message = response.body().getMessage();
-                    Toast.makeText(getApplicationContext(), message,Toast.LENGTH_SHORT).show();
+                    // 응답 실패(401)
+                    if (response.body() != null) {
+                        String message = response.body().getMessage().toString();
+                        Toast.makeText(MainActivity.this, message, Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
 
@@ -143,13 +146,15 @@ public class MainActivity extends AppCompatActivity {
         call.enqueue(new Callback<RecordDTO.StopRecord>() {
             @Override
             public void onResponse(Call<RecordDTO.StopRecord> record, Response<RecordDTO.StopRecord> response) {
-                if (response.isSuccessful()) {
+                if (response.isSuccessful() && response.body() != null) {
                     // 응답 성공(200)
                     // body 없음
                 } else {
-                    // 응답 실패(403)
-                    String message = response.body().getMessage();
-                    Toast.makeText(getApplicationContext(), message,Toast.LENGTH_SHORT).show();
+                    // 응답 실패(401)
+                    if (response.body() != null) {
+                        String message = response.body().getMessage().toString();
+                        Toast.makeText(MainActivity.this, message, Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
             @Override
@@ -163,6 +168,7 @@ public class MainActivity extends AppCompatActivity {
 
     //위치 보내기
     void Location() {
+        Log.d(TAG, "위치보내기");
         String token = getToken();
         double memberLatitude = getLocation().getLatitude(); //경도
         double memberLongitude = getLocation().getLongitude(); //위도
@@ -173,16 +179,17 @@ public class MainActivity extends AppCompatActivity {
             //서버 통신 성공
             @Override
             public void onResponse(Call<RecordDTO.Location> call, Response<RecordDTO.Location> response) {
-                if (response.isSuccessful()) {
+                if (response.isSuccessful() && response.body() != null) {
                     // 응답 성공(200)
                     // body 없음
                 } else {
                     // 응답 실패(401)
-                    String message = response.body().getMessage();
-                    Toast.makeText(MainActivity.this, message, Toast.LENGTH_SHORT).show();
+                    if (response.body() != null) {
+                        String message = response.body().getMessage().toString();
+                        Toast.makeText(MainActivity.this, message, Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
-
             //서버 통신 실패
             @Override
             public void onFailure(Call<RecordDTO.Location> call, Throwable t) {
@@ -191,9 +198,10 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-    private boolean isRunning = true;
-    private Thread timeThread = null;
 
+    // 타이머 구현
+    private boolean isRunning = false;
+    private Thread timeThread = null;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -201,13 +209,15 @@ public class MainActivity extends AppCompatActivity {
 
         final LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
-        // 타이머 구현
         tv_time = findViewById(R.id.tv_time);
-        Button btn_start = findViewById(R.id.btn_start);
-        Button btn_stop = findViewById(R.id.btn_stop);
+        btn_start = findViewById(R.id.btn_start);
+        btn_stop = findViewById(R.id.btn_stop);
+        btn_start.setVisibility(View.VISIBLE);
+        btn_stop.setVisibility(View.INVISIBLE);
         btn_start.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Log.d(TAG, "기록시작");
                 if (!isRunning) {
                     isRunning = true;
                     btn_start.setVisibility(View.INVISIBLE);
@@ -220,21 +230,23 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+
         btn_stop.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Log.d(TAG, "기록중지");
                 if (isRunning) {
                     isRunning = false;
                     btn_stop.setVisibility(View.INVISIBLE);
                     btn_start.setVisibility(View.VISIBLE);
                     Location();
                     stopRecord();
-                    tv_time.setText("");
+                    //record가 없으면 setText("")
+                    //tv_time.setText("");
                     timeThread.interrupt();
                 }
             }
         });
-
         Button btn_mypage = findViewById(R.id.btn_mypage);
         btn_mypage.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -276,33 +288,23 @@ public class MainActivity extends AppCompatActivity {
             //1000이 1초 1000*60 은 1분 1000*60*10은 10분 1000*60*60은 한시간
 
             @SuppressLint("DefaultLocale") String result = String.format("%02d:%02d:%02d", hour, min, sec);
-
             tv_time.setText(result);
         }
     };
     public class timeThread implements Runnable {
         @Override
         public void run() {
-            int i = 0;
-
-            while (true) {
-                while (isRunning) {
-                    Message msg = new Message();
-                    msg.arg1 = i++;
-                    handler.sendMessage(msg);
-
-                    try {
-                        Thread.sleep(10);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                tv_time.setText("");
-                                tv_time.setText("00:00:00");
-                            }
-                        });
-                    }
+            //if 위치내에 있으면
+            int i = recordTime;
+            while (!Thread.currentThread().isInterrupted()) {
+                Message msg = new Message();
+                msg.arg1 = i++;
+                handler.sendMessage(msg);
+                try {
+                    Thread.sleep(10);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    return;
                 }
             }
         }

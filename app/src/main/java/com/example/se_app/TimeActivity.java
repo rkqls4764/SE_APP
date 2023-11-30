@@ -23,19 +23,19 @@ import java.util.List;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-
 public class TimeActivity extends AppCompatActivity {
 
     private static final String TAG = MainActivity.class.getSimpleName();
     private List<String> data = new ArrayList<>();
     private ArrayAdapter<String> adapter;
     Service service = RetrofitInstance.getRetrofitInstance().create(Service.class);
-
+    private Button btn_time;
+    private Button btn_day;
 
     //날짜별 랭킹 화면으로 이동
     void clickDayRank() {
 
-        Button btn_day = findViewById(R.id.btn_day);
+        btn_day = findViewById(R.id.btn_day);
         btn_day.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -48,9 +48,9 @@ public class TimeActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_day);
+        setContentView(R.layout.activity_time);
         clickDayRank();
-
+        btn_time = findViewById(R.id.btn_time);
         ListView list = findViewById(R.id.list);
 
         //배열 연결과정
@@ -59,11 +59,10 @@ public class TimeActivity extends AppCompatActivity {
 
         String token = getToken();
         getData(token);
-
     }
     String getToken() {
         SharedPreferences sharedPreferences = getSharedPreferences("MySharedPref", MODE_PRIVATE);
-        String token = sharedPreferences.getString("jwt_token", "");
+        String token = sharedPreferences.getString("token", "");
         return token;
     }
 
@@ -75,9 +74,9 @@ public class TimeActivity extends AppCompatActivity {
                 if (response.isSuccessful()) {
                     List<RankDTO.RankResponse> rankList = (List<RankDTO.RankResponse>) response.body();
                     for (RankDTO.RankResponse rankItem : rankList) {
-                        String memberName = rankItem.getMemberName();
-                        String memberId = rankItem.getMemberId();
-                        String recordTime = String.valueOf(rankItem.getRecordTime());
+                        String memberName = rankItem.getMemberName().toString();
+                        String memberId = rankItem.getMemberId().toString();
+                        String recordTime = String.valueOf(rankItem.getRecordTime()).toString();
 
                         String dataItem = "Name: " + memberName + ", ID: " + memberId + ", Time: " + recordTime;
                         data.add(dataItem);
@@ -89,7 +88,6 @@ public class TimeActivity extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
                 }
             }
-
             @Override
             public void onFailure(Call<RankDTO.RankResponse> call, Throwable t) {
                 Toast.makeText(TimeActivity.this, "서버와 통신을 실패하였습니다.", Toast.LENGTH_SHORT).show();
