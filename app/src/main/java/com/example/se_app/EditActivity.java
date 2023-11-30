@@ -25,7 +25,7 @@ import retrofit2.Response;
 public class EditActivity extends AppCompatActivity {
 
     private static final String TAG = RegisterActivity.class.getSimpleName();
-    Service service = RetrofitInstance.getRetrofitInstance().create(Service.class);
+    private Service service = RetrofitInstance.getRetrofitInstance().create(Service.class);
     private String state;
 
     /* 화면 시작 시 실행 함수 */

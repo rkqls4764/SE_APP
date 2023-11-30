@@ -31,8 +31,8 @@ import retrofit2.Response;
 public class CalendarActivity extends AppCompatActivity {
 
     private static final String TAG = RegisterActivity.class.getSimpleName();
-    Service service = RetrofitInstance.getRetrofitInstance().create(Service.class);
-    String select_date = "";
+    private Service service = RetrofitInstance.getRetrofitInstance().create(Service.class);
+    private String select_date = "";
 
     /* 화면 시작 시 실행 함수 */
     @Override

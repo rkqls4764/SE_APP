@@ -26,7 +26,7 @@ import retrofit2.Response;
 public class LoginActivity extends AppCompatActivity {
 
     private static final String TAG = LoginActivity.class.getSimpleName();
-    Service service = RetrofitInstance.getRetrofitInstance().create(Service.class);
+    private Service service = RetrofitInstance.getRetrofitInstance().create(Service.class);
     private SharedPreferences sharedPreferences;
 
     /* 화면 시작 시 실행 함수 */

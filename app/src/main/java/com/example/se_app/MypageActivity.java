@@ -22,7 +22,7 @@ import retrofit2.Response;
 public class MypageActivity extends AppCompatActivity {
 
     private static final String TAG = RegisterActivity.class.getSimpleName();
-    Service service = RetrofitInstance.getRetrofitInstance().create(Service.class);
+    private Service service = RetrofitInstance.getRetrofitInstance().create(Service.class);
 
     /* 화면 시작 시 실행 함수 */
     @Override
