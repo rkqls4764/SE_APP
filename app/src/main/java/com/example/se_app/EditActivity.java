@@ -25,7 +25,7 @@ import retrofit2.Response;
 public class EditActivity extends AppCompatActivity {
 
     private static final String TAG = RegisterActivity.class.getSimpleName();
-    Service service = RetrofitInstance.getRetrofitInstance().create(Service.class);
+    private Service service = RetrofitInstance.getRetrofitInstance().create(Service.class);
     private String state;
 
     /* 화면 시작 시 실행 함수 */
@@ -34,14 +34,14 @@ public class EditActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit);
 
-        EditText et_password = findViewById(R.id.et_password); //비밀번호
-        EditText et_name = findViewById(R.id.et_name); //이름
-        EditText et_major = findViewById(R.id.et_major); //학과
-        EditText et_birth = findViewById(R.id.et_birth); //생년월일
-        Spinner sp_state = findViewById(R.id.spinner); //상태(재학/휴학/졸업)
+        EditText et_edit_password = findViewById(R.id.et_edit_password); //비밀번호
+        EditText et_edit_name = findViewById(R.id.et_edit_name); //이름
+        EditText et_edit_major = findViewById(R.id.et_edit_major); //학과
+        EditText et_edit_birth = findViewById(R.id.et_edit_birth); //생년월일
+        Spinner sp_edit_state = findViewById(R.id.sp_edit_state); //상태(재학/휴학/졸업)
 
         /* 상태 리스트의 아이템 클릭 시 실행 구문 */
-        sp_state.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        sp_edit_state.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             //아이템이 선택된 경우
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
@@ -51,7 +51,7 @@ public class EditActivity extends AppCompatActivity {
             //아무것도 선택되지 않은 경우
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
-                state = "";
+
             }
         });
 
@@ -59,10 +59,10 @@ public class EditActivity extends AppCompatActivity {
         String token = getToken();
 
         //사용자 정보 가져오기
-        getUserData(token, et_password, et_name, et_major, et_birth, sp_state);
+        getUserData(token, et_edit_name, et_edit_major, et_edit_birth, sp_edit_state);
 
         //확인 버튼 클릭 시 실행
-        clickBtnOk(token, et_password, et_name, et_major, et_birth);
+        clickBtnOk(token, et_edit_password, et_edit_name, et_edit_major, et_edit_birth);
 
         //취소 버튼 클릭 시 실행 구문
         clickBtnNo();
@@ -70,13 +70,14 @@ public class EditActivity extends AppCompatActivity {
 
     /* SharedPreferences에서 토큰을 가져오는 함수 */
     String getToken() {
-        SharedPreferences sharedPreferences = getSharedPreferences("MySharedPref", MODE_PRIVATE);
-        String token = sharedPreferences.getString("jwt_token", "");
+        SharedPreferences sharedPreferences = getSharedPreferences("token", MODE_PRIVATE);
+        String token = sharedPreferences.getString("token", "");
+        Log.d("TAG", "토큰 리턴 성공");
         return token;
     }
 
     /* 사용자의 정보를 가져오는 함수 */
-    void getUserData(String token, EditText et_password, EditText et_name, EditText et_major, EditText et_birth, Spinner sp_state) {
+    void getUserData(String token, EditText et_edit_name, EditText et_edit_major, EditText et_edit_birth, Spinner sp_edit_state) {
         Call<MypageDTO.MypageResponse> call = service.mypage("Bearer " + token);
         call.enqueue(new Callback<MypageDTO.MypageResponse>() {
             //서버와 통신 성공
@@ -85,12 +86,14 @@ public class EditActivity extends AppCompatActivity {
                 //응답 성공(200): 데이터베이스에서 회원 정보를 제대로 읽어왔을 때
                 if (response.isSuccessful()) {
                     //정보 출력
-                    et_password.setText("비밀번호 : " + response.body().getMemberPw());
-                    et_name.setText("이름 : " + response.body().getMemberName());
-                    et_major.setText("학과 : " + response.body().getMemberMajor());
-                    et_birth.setText("생년월일 : " + response.body().getMemberBirth());
-                    String state = response.body().getMemberState();
-                    sp_state.setSelection(getIndex(sp_state, state));
+                    et_edit_name.setText(response.body().getMemberName().toString());
+                    et_edit_major.setText(response.body().getMemberMajor().toString());
+                    et_edit_birth.setText(response.body().getMemberBirth().toString());
+                    state = response.body().getMemberState().toString();
+                    int stateIndex = getIndex(sp_edit_state, state);
+                    sp_edit_state.setSelection(stateIndex);
+
+                    Log.d("TAG", "정보 출력 성공");
                 }
             }
 
@@ -104,16 +107,16 @@ public class EditActivity extends AppCompatActivity {
     }
 
     /* 확인 버튼 클릭 시 실행 함수 */
-    void clickBtnOk(String token, EditText et_password, EditText et_name, EditText et_major, EditText et_birth) {
+    void clickBtnOk(String token, EditText et_edit_password, EditText et_edit_name, EditText et_edit_major, EditText et_edit_birth) {
 
         Button btn_ok = findViewById(R.id.btn_ok);
         btn_ok.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 EditDTO.EditRequest editRequest = new EditDTO.EditRequest(
-                        et_password.getText().toString(),
-                        et_name.getText().toString(), et_major.getText().toString(),
-                        state, et_birth.getText().toString());
+                        et_edit_password.getText().toString(),
+                        et_edit_name.getText().toString(), et_edit_major.getText().toString(),
+                        state, et_edit_birth.getText().toString());
 
                 Call<EditDTO.EditResponse> call = service.edit("Bearer " + token, editRequest);
                 call.enqueue(new Callback<EditDTO.EditResponse>() {
@@ -131,6 +134,8 @@ public class EditActivity extends AppCompatActivity {
                             //MypageActivity로 이동
                             Intent intent = new Intent(EditActivity.this, MypageActivity.class);
                             startActivity(intent);
+
+                            Log.d("TAG", "정보 수정 성공");
                         }
                     }
 

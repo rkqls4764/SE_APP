@@ -1,8 +1,10 @@
 package com.example.se_app;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
@@ -27,17 +29,29 @@ public class DayActivity extends AppCompatActivity {
     private static final String TAG = MainActivity.class.getSimpleName();
     private List<String> data = new ArrayList<>();
     private ArrayAdapter<String> adapter;
+    private Button btn_time;
+    private Button btn_day;
     Service service = RetrofitInstance.getRetrofitInstance().create(Service.class);
 
+    //시간별 랭킹 화면으로 이동
+    void clickTimeRank() {
+        btn_time = findViewById(R.id.btn_time);
+        btn_time.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(DayActivity.this, TimeActivity.class);
+                startActivity(intent);
+            }
+        });
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        btn_day = findViewById(R.id.btn_day);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_day);
+        clickTimeRank();
 
-        Button btn_time = findViewById(R.id.btn_time);
-        Button btn_day = findViewById(R.id.btn_day);
         ListView list = findViewById(R.id.list);
-
 
         //배열 연결과정
         adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, data);
@@ -49,7 +63,7 @@ public class DayActivity extends AppCompatActivity {
     }
     String getToken() {
         SharedPreferences sharedPreferences = getSharedPreferences("MySharedPref", MODE_PRIVATE);
-        String token = sharedPreferences.getString("jwt_token", "");
+        String token = sharedPreferences.getString("token", "");
         return token;
     }
 
@@ -61,9 +75,9 @@ public class DayActivity extends AppCompatActivity {
                 if (response.isSuccessful()) {
                     List<RankDTO.RankResponse> rankList = (List<RankDTO.RankResponse>) response.body();
                     for (RankDTO.RankResponse rankItem : rankList) {
-                        String memberName = rankItem.getMemberName();
-                        String memberId = rankItem.getMemberId();
-                        String recordTime = String.valueOf(rankItem.getRecordTime());
+                        String memberName = rankItem.getMemberName().toString();
+                        String memberId = rankItem.getMemberId().toString();
+                        String recordTime = String.valueOf(rankItem.getRecordTime()).toString();
 
                         String dataItem = "Name: " + memberName + ", ID: " + memberId + ", Time: " + recordTime;
                         data.add(dataItem);
