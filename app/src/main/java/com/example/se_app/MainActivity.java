@@ -1,3 +1,4 @@
+
 package com.example.se_app;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -33,7 +34,7 @@ import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = MainActivity.class.getSimpleName();
-    private SharedPreferences sharedPreferences;    //SharedPreferences에서 토큰 가져오기
+    private SharedPreferences sharedPreferences;
     private TextView tv_time;
     private int recordTime;
     private Button btn_start;
@@ -41,14 +42,12 @@ public class MainActivity extends AppCompatActivity {
 
     Service service = RetrofitInstance.getRetrofitInstance().create(Service.class);
 
-    /* SharedPreferences에서 토큰을 가져오는 함수 */
     String getToken() {
         SharedPreferences sharedPreferences = getSharedPreferences("token", MODE_PRIVATE);
         String token = sharedPreferences.getString("token", "");
         return token;
     }
 
-    /*위도, 경도 구하기*/
     Location getLocation() {
         final LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
@@ -65,8 +64,8 @@ public class MainActivity extends AppCompatActivity {
 
     private final LocationListener gpsLocationListener = new LocationListener() {
         public void onLocationChanged(Location location) {
-            double longitude = location.getLongitude(); // 위도
-            double latitude = location.getLatitude(); // 경도
+            double longitude = location.getLongitude();
+            double latitude = location.getLatitude();
         }
 
         public void onStatusChanged(String provider, int status, Bundle extras) {
@@ -79,22 +78,16 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
-    //당일 기록 가져오기
     void getTodayRecord() {
-        Log.d(TAG, "당일기록가져오기");
         String token = getToken();
         Call<RecordDTO.TodayRecord> call = service.todayrecord("Bearer " + token);
         call.enqueue(new Callback<RecordDTO.TodayRecord>() {
-            //서버 통신 성공
             @Override
             public void onResponse(Call<RecordDTO.TodayRecord> call, Response<RecordDTO.TodayRecord> response) {
-                //응답 성공(200)
                 if (response.isSuccessful()) {
-                    //당일 기록 저장
                     recordTime = response.body().setRecordTimeToday();
                 }
             }
-            //서버 통신 실패
             @Override
             public void onFailure(Call<RecordDTO.TodayRecord> call, Throwable t) {
                 Toast.makeText(MainActivity.this, "서버와 통신을 실패하였습니다.", Toast.LENGTH_SHORT).show();
@@ -103,7 +96,6 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    //기록하기(출석하기)
     void startRecord() {
         String token = getToken();
         double setUserLatitude = getLocation().getLongitude();
@@ -113,27 +105,23 @@ public class MainActivity extends AppCompatActivity {
         call.enqueue(new Callback<RecordDTO.StartRecord>() {
             @Override
             public void onResponse(Call<RecordDTO.StartRecord> record, Response<RecordDTO.StartRecord> response) {
-                if (response.isSuccessful()) {
-                    // 응답 성공(200)
-                    String message = response.body().getMessage();
-                    Toast.makeText(getApplicationContext(), message,Toast.LENGTH_SHORT).show();
+                if (response.isSuccessful() && response.body() != null) {
                 } else {
-                    // 응답 실패(403)
-                    String message = response.body().getMessage();
-                    Toast.makeText(getApplicationContext(), message,Toast.LENGTH_SHORT).show();
+                    if (response.body() != null) {
+                        String message = response.body().getMessage().toString();
+                        Toast.makeText(MainActivity.this, message, Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
 
             @Override
             public void onFailure(Call<RecordDTO.StartRecord> record, Throwable t) {
-                // 서버와 통신이 실패
-                Toast.makeText(MainActivity.this, "서버와 통신을 실패하였습니다.", Toast.LENGTH_SHORT).show();
+                Toast.makeText( MainActivity.this, "서버와 통신을 실패하였습니다.", Toast.LENGTH_SHORT).show();
                 Log.e(TAG, "서버 통신 실패: " + t.getMessage());
             }
         });
     }
 
-    //기록중단
     void stopRecord() {
         String token = getToken();
         double userLatitude = getLocation().getLongitude();
@@ -145,49 +133,40 @@ public class MainActivity extends AppCompatActivity {
         call.enqueue(new Callback<RecordDTO.StopRecord>() {
             @Override
             public void onResponse(Call<RecordDTO.StopRecord> record, Response<RecordDTO.StopRecord> response) {
-                if (response.isSuccessful()) {
-                    // 응답 성공(200)
-                    String message = response.body().getMessage();
-                    Toast.makeText(getApplicationContext(), message,Toast.LENGTH_SHORT).show();
+                if (response.isSuccessful() && response.body() != null) {
                 } else {
-                    // 응답 실패(403)
-                    String message = response.body().getMessage();
-                    Toast.makeText(getApplicationContext(), message,Toast.LENGTH_SHORT).show();
+                    if (response.body() != null) {
+                        String message = response.body().getMessage().toString();
+                        Toast.makeText(MainActivity.this, message, Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
             @Override
             public void onFailure(Call<RecordDTO.StopRecord> record, Throwable t) {
-                // 서버와 통신이 실패
                 Toast.makeText(MainActivity.this, "서버와 통신을 실패하였습니다.", Toast.LENGTH_SHORT).show();
                 Log.e(TAG, "서버 통신 실패: " + t.getMessage());
             }
         });
     }
 
-    //위치 보내기
     void Location() {
-        Log.d(TAG, "위치보내기");
         String token = getToken();
-        double memberLatitude = getLocation().getLatitude(); //경도
-        double memberLongitude = getLocation().getLongitude(); //위도
+        double memberLatitude = getLocation().getLatitude();
+        double memberLongitude = getLocation().getLongitude();
         RecordDTO.Location location = new RecordDTO.Location(recordTime, memberLatitude, memberLongitude);
 
         Call<RecordDTO.Location> call = service.location("Bearer " + token, location);
         call.enqueue(new Callback<RecordDTO.Location>() {
-            //서버 통신 성공
             @Override
             public void onResponse(Call<RecordDTO.Location> call, Response<RecordDTO.Location> response) {
-                if (response.isSuccessful()) {
-                    // 응답 성공(200)
-                    String message = response.body().getMessage();
-                    Toast.makeText(getApplicationContext(), message,Toast.LENGTH_SHORT).show();
+                if (response.isSuccessful() && response.body() != null) {
                 } else {
-                    // 응답 실패(403)
-                    String message = response.body().getMessage();
-                    Toast.makeText(getApplicationContext(), message,Toast.LENGTH_SHORT).show();
+                    if (response.body() != null) {
+                        String message = response.body().getMessage().toString();
+                        Toast.makeText(MainActivity.this, message, Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
-            //서버 통신 실패
             @Override
             public void onFailure(Call<RecordDTO.Location> call, Throwable t) {
                 Toast.makeText(MainActivity.this, "서버와 통신을 실패하였습니다.", Toast.LENGTH_SHORT).show();
@@ -196,7 +175,6 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    // 타이머 구현
     private boolean isRunning = false;
     private Thread timeThread = null;
     @Override
@@ -214,7 +192,6 @@ public class MainActivity extends AppCompatActivity {
         btn_start.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.d(TAG, "기록시작");
                 if (!isRunning) {
                     isRunning = true;
                     btn_start.setVisibility(View.INVISIBLE);
@@ -231,15 +208,13 @@ public class MainActivity extends AppCompatActivity {
         btn_stop.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.d(TAG, "기록중지");
                 if (isRunning) {
                     isRunning = false;
                     btn_stop.setVisibility(View.INVISIBLE);
                     btn_start.setVisibility(View.VISIBLE);
                     Location();
                     stopRecord();
-                    //record가 없으면 setText("")
-                    tv_time.setText("");
+                    //tv_time.setText("");
                     timeThread.interrupt();
                 }
             }
@@ -248,7 +223,6 @@ public class MainActivity extends AppCompatActivity {
         btn_mypage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //마이페이지 화면으로 이동
                 Intent intent = new Intent(MainActivity.this, MypageActivity.class);
                 startActivity(intent);
             }
@@ -258,7 +232,6 @@ public class MainActivity extends AppCompatActivity {
         btn_calendar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //캘린더 화면으로 이동
                 Intent intent = new Intent(MainActivity.this, CalendarActivity.class);
                 startActivity(intent);
             }
@@ -268,7 +241,6 @@ public class MainActivity extends AppCompatActivity {
         btn_rank.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //랭킹 화면으로 이동
                 Intent intent = new Intent(MainActivity.this, RankActivity.class);
                 startActivity(intent);
             }
@@ -290,7 +262,6 @@ public class MainActivity extends AppCompatActivity {
     public class timeThread implements Runnable {
         @Override
         public void run() {
-            getTodayRecord();
             int i = recordTime;
             while (!Thread.currentThread().isInterrupted()) {
                 Message msg = new Message();
