@@ -13,8 +13,12 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.se_app.dto.RegisterDTO;
+import com.example.se_app.dto.ResponseUtilDTO;
 import com.example.se_app.instance.RetrofitInstance;
 import com.example.se_app.service.Service;
+import com.google.gson.Gson;
+
+import java.io.IOException;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -23,7 +27,7 @@ import retrofit2.Response;
 public class RegisterActivity extends AppCompatActivity {
 
     private static final String TAG = RegisterActivity.class.getSimpleName();
-    Service service = RetrofitInstance.getRetrofitInstance().create(Service.class);
+    private Service service = RetrofitInstance.getRetrofitInstance().create(Service.class);
     private String state;
 
     /* 화면 시작 시 실행 함수 */
@@ -81,7 +85,7 @@ public class RegisterActivity extends AppCompatActivity {
                         //응답 성공(200): 모든 항목을 입력했을 경우
                         if (response.isSuccessful()) {
                             //body의 회원가입 성공 메세지를 저장
-                            String message = response.body().getMessage();
+                            String message = response.body().getMessage().toString();
 
                             //회원가입 성공 메세지를 토스트 메세지로 띄움
                             Toast.makeText(RegisterActivity.this, message, Toast.LENGTH_SHORT).show();
@@ -95,7 +99,19 @@ public class RegisterActivity extends AppCompatActivity {
                         //응답 실패(404): 아이디가 중복일 경우
                         else if (response.code() == 404) {
                             //에러 메세지를 토스트 메세지로 출력
-                            Toast.makeText(RegisterActivity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                            String errorMessage = "";
+                            if (response.errorBody() != null) {
+                                try {
+                                    // 에러 응답을 DTO로 변환
+                                    ResponseUtilDTO.MessageResponse errorResponse = new Gson().fromJson(response.errorBody().string(), ResponseUtilDTO.MessageResponse.class);
+                                    errorMessage = errorResponse.getMessage();
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+
+                            //에러 메세지를 토스트 메세지로 출력
+                            Toast.makeText(RegisterActivity.this, errorMessage, Toast.LENGTH_SHORT).show();
 
                             Log.d("TAG", "회원가입 실패: 아이디 중복");
                         }

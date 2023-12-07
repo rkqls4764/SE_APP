@@ -22,7 +22,7 @@ import retrofit2.Response;
 public class MypageActivity extends AppCompatActivity {
 
     private static final String TAG = RegisterActivity.class.getSimpleName();
-    Service service = RetrofitInstance.getRetrofitInstance().create(Service.class);
+    private Service service = RetrofitInstance.getRetrofitInstance().create(Service.class);
 
     /* 화면 시작 시 실행 함수 */
     @Override
@@ -32,7 +32,6 @@ public class MypageActivity extends AppCompatActivity {
 
         TextView tv_titleName = findViewById(R.id.tv_titleName); //상단 이름
         TextView tv_studentId = findViewById(R.id.tv_studentId); //학번(아이디)
-        TextView tv_password = findViewById(R.id.tv_password); //비밀번호
         TextView tv_name = findViewById(R.id.tv_name); //이름
         TextView tv_major = findViewById(R.id.tv_major); //학과
         TextView tv_birth = findViewById(R.id.tv_birth); //생년월일
@@ -42,7 +41,7 @@ public class MypageActivity extends AppCompatActivity {
         String token = getToken();
 
         //사용자 정보 가져오기
-        getUserData(token, tv_titleName, tv_studentId, tv_password, tv_name, tv_major, tv_birth, tv_state);
+        getUserData(token, tv_titleName, tv_studentId, tv_name, tv_major, tv_birth, tv_state);
 
         //정보 수정 버튼 클릭 시 실행
         clickBtnEdit();
@@ -63,7 +62,7 @@ public class MypageActivity extends AppCompatActivity {
     }
 
     /* 사용자의 정보를 가져오는 함수 */
-    void getUserData(String token, TextView tv_titleName, TextView tv_studentId, TextView tv_password, TextView tv_name, TextView tv_major, TextView tv_birth, TextView tv_state) {
+    void getUserData(String token, TextView tv_titleName, TextView tv_studentId, TextView tv_name, TextView tv_major, TextView tv_birth, TextView tv_state) {
         Call<MypageDTO.MypageResponse> call = service.mypage("Bearer " + token);
         call.enqueue(new Callback<MypageDTO.MypageResponse>() {
             //서버와 통신 성공
@@ -74,7 +73,6 @@ public class MypageActivity extends AppCompatActivity {
                     //정보 출력
                     tv_titleName.setText(response.body().getMemberName().toString());
                     tv_studentId.setText("학번 : " + response.body().getMemberId().toString());
-                    tv_password.setText("비밀번호 : " + response.body().getMemberPw());
                     tv_name.setText("이름 : " + response.body().getMemberName().toString());
                     tv_major.setText("학과 : " + response.body().getMemberMajor().toString());
                     tv_birth.setText("생년월일 : " + response.body().getMemberBirth().toString());

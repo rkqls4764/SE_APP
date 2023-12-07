@@ -7,11 +7,9 @@ public class NoticeDTO {
     public static class NoticeResponse {
         private String message; //메세지
         private String noticeContent; //공지사항 내용
-        private LocalDateTime createTime; //공지사항 등록 시간
 
         //getter
         public String getMessage() { return message; }
         public String getNoticeContent() { return noticeContent; }
-        public LocalDateTime getCreateTime() { return createTime; }
     }
 }

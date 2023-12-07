@@ -42,7 +42,7 @@ public interface Service {
 
     //선택 날짜의 출석기록 조회
     @GET("/myrecord")
-    Call<CalendarDTO.TimeResponse> time(@Header("Authorization") String token, @Query("month") int month, @Query("date") int date);
+    Call<CalendarDTO.TimeResponse> time(@Header("Authorization") String token, @Query("date") String date);
 
     //목표시간 조회
     @GET("/studygoal")

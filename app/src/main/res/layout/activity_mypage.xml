@@ -82,18 +82,6 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/tv_password"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:text="비밀번호 : "
-            android:textSize="24sp"
-            android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_studentId" />
-
-        <TextView
             android:id="@+id/tv_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -103,7 +91,7 @@
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_password" />
+            app:layout_constraintTop_toBottomOf="@+id/tv_studentId" />
 
         <TextView
             android:id="@+id/tv_major"
@@ -157,24 +145,24 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:contentDescription="캘린더"
-                android:background="@drawable/button_calendar" />
+                android:background="@drawable/button_calendar"
+                android:contentDescription="캘린더" />
 
             <android.widget.Button
                 android:id="@+id/btn_home"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:contentDescription="홈"
-                android:background="@drawable/button_home" />
+                android:background="@drawable/button_home"
+                android:contentDescription="홈" />
 
             <android.widget.Button
                 android:id="@+id/btn_mypage"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:contentDescription="마이페이지"
-                android:background="@drawable/button_mypage" />
+                android:background="@drawable/button_mypage"
+                android:contentDescription="마이페이지" />
 
         </LinearLayout>
 
