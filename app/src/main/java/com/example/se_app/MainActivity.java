@@ -238,7 +238,7 @@ public class MainActivity extends AppCompatActivity {
                     btn_start.setVisibility(View.VISIBLE);
                     Location();
                     stopRecord();
-                    //record가 없으면 setText("")
+                    //record가 없ㅂㅂㅂ으면 setText("")
                     tv_time.setText("");
                     timeThread.interrupt();
                 }
